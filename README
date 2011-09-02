@@ -1,0 +1,16 @@
+The purpose of this project is provide a simple CI server that will work with
+GitHub Post-Receive hook. It is also specifically designed to handle multiple
+build/job queues for each branch.
+
+This would basically allow you to every time code is pushed to the central
+repository enqueue a build/job for the specific branch. That way if you
+have topic branches that are being pushed to the central repository along
+side the mainline branch they will get queue properly as well.
+
+My idea for implementation at this point is that if I can detect the branch
+from the GitHub Post-Receive hook then I can identify branch. If I can
+identify branch then I can maintain individual queues for each branch.
+
+Then the execution would look at config values for predefined branches and
+priorities for order of running them so that the mainline branch running its
+jobs could take precedence over non specified topic branches.
