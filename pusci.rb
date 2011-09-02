@@ -6,7 +6,7 @@ require 'bundler/setup'
 require 'sinatra'
 require 'git'
 
-get '/hi' do
-  "Hello World!"
+post '/:proj_name/build' do
+  puts params.inspect
 end
 
