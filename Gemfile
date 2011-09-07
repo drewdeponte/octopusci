@@ -1,4 +1,6 @@
 source "http://rubygems.org"
 
 gem 'sinatra'
-gem 'git'
+gem 'json'
+gem 'resque'
+gem 'grit'
