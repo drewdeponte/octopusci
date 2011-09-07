@@ -1,2 +1,2 @@
-require File.expand_path('./pusci.rb')
+require File.expand_path('./octopusci.rb')
 require 'resque/tasks'
