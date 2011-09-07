@@ -7,22 +7,11 @@ require 'sinatra'
 require 'json'
 require 'resque'
 
-# require 'grit'
-# 
-# include Grit
-# 
-# gritty = Grit::Git.new('/tmp/filling-in')
-# gritty.clone({:quiet => false, :verbose => true, :progress => true}, "git://github.com/cyphactor/temp_pusci_test.git", "/tmp/temp_pusci_test")
-# puts gritty.heads
-# 
-# exit
-
-PROJECTS = [
-  {
-    :name => "temp_pusci_test",
-    :workspace_path => "/Users/adeponte/.pusci/"
-  }
-]
+class DrewSleep
+  def self.perform()
+    sleep 600
+  end
+end
 
 # f = File.open('/tmp/pusci_cmds.sh', 'w')
 # f.write("""#!/bin/bash
@@ -36,7 +25,11 @@ PROJECTS = [
 # 
 # exit
 
-PROJECT_QUEUES = {}
+get '/:project_name/:branch_name/manbuild' do
+  q_name = params[:project_name] + '-' + params[:branch_name]
+  puts "#{q_name} - Queue Size: #{Resque.size(q_name)}"
+  Resque.push(q_name, :class => 'DrewSleep', :args => [])
+end
 
 post '/:project_name/build' do
   proj_name = params[:project_name]
