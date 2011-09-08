@@ -17,7 +17,7 @@ PROJECTS = [
 
 
 class DrewSleep
-  def self.perform()
+  def self.perform(payload)
     # Fetch the latest from the repo and checkout the ref
     
     # Run the build commands
@@ -33,7 +33,7 @@ class DrewSleep
     cmd_status = $?
     
     # Notify about the results
-    Notifier.welcome('cyphactor@gmail.com', cmd_output, cmd_status).deliver 
+    Notifier.job_complete('cyphactor@gmail.com', cmd_output, cmd_status, payload).deliver 
   end
 end
 

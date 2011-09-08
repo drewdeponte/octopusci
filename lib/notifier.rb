@@ -11,10 +11,10 @@ ActionMailer::Base.view_paths = File.dirname(__FILE__)
 class Notifier < ActionMailer::Base
   default :from => 'cyphactor@gmail.com'
 
-  def welcome(recipient, cmd_output, cmd_status)
+  def job_complete(recipient, cmd_output, cmd_status)
     @cmd_output = cmd_output
     @cmd_status = cmd_status
-    mail(:to => recipient, :from => SMTP_FROM_EMAIL, :subject => "Welcome Notification") do |format|
+    mail(:to => recipient, :from => SMTP_FROM_EMAIL, :subject => "Octopusci Job Complete") do |format|
       format.text
       format.html
     end
