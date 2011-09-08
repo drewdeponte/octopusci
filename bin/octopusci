@@ -13,19 +13,26 @@ require 'octopusci'
 
 Octopusci.configure("/etc/octopusci.yml")
 
-f = File.open('/tmp/pusci_cmds.sh', 'w')
-f.write("""#!/bin/bash
-echo 'foo bar titty'
-exit 0
-""")
-f.chmod(0775)
-f.close()
+# class MyTestJob < Octopusci::Job
+# 
+# end
+
+# f = File.open('/tmp/pusci_cmds.sh', 'w')
+# f.write("""#!/bin/bash
+# echo 'foo bar titty'
+# exit 0
+# """)
+# f.chmod(0775)
+# f.close()
 
 get '/:project_name/:branch_name/manbuild' do
-  github_payload = nil
-  q_name = params[:project_name] + '-' + params[:branch_name]
-  puts "#{q_name} - Queue Size: #{Resque.size(q_name)}"
-  Resque.push(q_name, :class => 'Octopusci::Job', :args => ['/tmp/pusci_cmds.sh', github_payload])
+  github_payload = {}
+  # q_name = params[:project_name] + '-' + params[:branch_name]
+  # puts "#{q_name} - Queue Size: #{Resque.size(q_name)}"
+  # Resque.push(q_name, :class => 'Octopusci::Job', :args => ['/tmp/pusci_cmds.sh', github_payload])
+  # Use redis to store 'payload:foo' as the git
+  
+  Octopusci::Queue.enqueue('MyTestJob', params[:project_name], params[:branch_name], github_payload)
 end
 
 post '/github-build' do

@@ -51,7 +51,7 @@ module Octopusci
   def self.configure(yaml_file = nil, &block)    
     CONFIG.load_yaml(yaml_file) if !yaml_file.nil?
     yield CONFIG if block
-    
+
     Notifier.default :from => Octopusci::CONFIG['smtp']['notification_from_email']
     Notifier.delivery_method = :smtp
     Notifier.smtp_settings = {
