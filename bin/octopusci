@@ -10,8 +10,7 @@ require 'json'
 require 'resque'
 
 require 'octopusci'
-
-require File.expand_path('../../lib/octopusci/notifier.rb', __FILE__)
+require 'octopusci/notifier'
 
 PROJECTS = [
   {
