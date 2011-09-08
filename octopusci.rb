@@ -7,11 +7,15 @@ require 'sinatra'
 require 'json'
 require 'resque'
 
+require File.expand_path('../lib/notifier.rb', __FILE__)
+
 PROJECTS = [
   {
     :name => 'temp_pusci_test'
   }
 ]
+
+Notifier.welcome().deliver
 
 class DrewSleep
   def self.perform()
