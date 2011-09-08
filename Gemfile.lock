@@ -1,3 +1,13 @@
+PATH
+  remote: .
+  specs:
+    octopusci (0.0.1)
+      actionmailer
+      grit
+      json
+      resque
+      sinatra
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -56,7 +66,7 @@ GEM
       vegas (~> 0.1.2)
     sinatra (1.2.6)
       rack (~> 1.1)
-      tilt (>= 1.2.2, < 2.0)
+      tilt (< 2.0, >= 1.2.2)
     sprockets (2.0.0)
       hike (~> 1.2)
       rack (~> 1.0)
@@ -72,8 +82,4 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  actionmailer
-  grit
-  json
-  resque
-  sinatra
+  octopusci!

@@ -9,7 +9,7 @@ SMTP_PASSWORD = 'passw0rd'
 ActionMailer::Base.view_paths = File.dirname(__FILE__)
 
 class Notifier < ActionMailer::Base
-  default :from => 'cyphactor@gmail.com'
+  default :from => 'jarrett.baugh@gmail.com'
 
   def welcome(recipient, cmd_output, cmd_status)
     @cmd_output = cmd_output
