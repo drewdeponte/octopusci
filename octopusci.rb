@@ -15,31 +15,27 @@ PROJECTS = [
   }
 ]
 
-Notifier.welcome().deliver
 
 class DrewSleep
   def self.perform()
-    sleep 600
     # Fetch the latest from the repo and checkout the ref
     
     # Run the build commands
+    f = File.open('/tmp/pusci_cmds.sh', 'w')
+    f.write("""#!/bin/bash
+    echo 'foo bar titty'
+    exit 0
+    """)
+    f.chmod(0775)
+    f.close()
+
+    cmd_output = `/tmp/pusci_cmds.sh`
+    cmd_status = $?
     
     # Notify about the results
-    
+    Notifier.welcome('cyphactor@gmail.com', cmd_output, cmd_status).deliver 
   end
 end
-
-# f = File.open('/tmp/pusci_cmds.sh', 'w')
-# f.write("""#!/bin/bash
-# echo 'foo bar titty'
-# """)
-# f.chmod(0775)
-# f.close()
-# 
-# output = IO.popen('/tmp/pusci_cmds.sh')
-# puts output.read
-# 
-# exit
 
 get '/:project_name/:branch_name/manbuild' do
   q_name = params[:project_name] + '-' + params[:branch_name]
