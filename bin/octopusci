@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
+
 require 'rubygems'
 require 'bundler/setup'
 
@@ -7,7 +9,9 @@ require 'sinatra'
 require 'json'
 require 'resque'
 
-require File.expand_path('../lib/notifier.rb', __FILE__)
+require 'octopusci'
+
+require File.expand_path('../../lib/octopusci/notifier.rb', __FILE__)
 
 PROJECTS = [
   {
