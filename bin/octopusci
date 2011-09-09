@@ -34,7 +34,7 @@ post '/github-build' do
   q_name = "#{repository_name}-#{branch_name}"
   
   Octopusci::CONFIG["projects"].each do |proj|
-    if (proj['name'] == repository_name)
+    if (proj['name'] == repository_name) # TODO: Add checking for project owner as well so that it won't build other peoples repos.
       # Append job to this branches queue
       Resque.push(q_name, :class => 'DrewSleep', :args => ['/tmp/pusci_cmds.sh', github_payload])
       break
