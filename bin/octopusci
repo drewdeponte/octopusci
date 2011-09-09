@@ -3,42 +3,8 @@
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
 
 require 'rubygems'
-require 'bundler/setup'
+require 'vegas'
 
-require 'sinatra'
-require 'json'
-require 'resque'
+require 'octopusci/server'
 
-require 'octopusci'
-
-if Octopusci::CONFIG.has_key?('stages')
-  Octopusci::StageLocker.load(Octopusci::CONFIG['stages'])
-end
-
-get '/:project_name/:branch_name/manbuild' do
-  github_payload = {}
-  # q_name = params[:project_name] + '-' + params[:branch_name]
-  # puts "#{q_name} - Queue Size: #{Resque.size(q_name)}"
-  # Resque.push(q_name, :class => 'Octopusci::Job', :args => ['/tmp/pusci_cmds.sh', github_payload])
-  # Use redis to store 'payload:foo' as the git
-  
-  Octopusci::Queue.enqueue('MyTestJob', params[:project_name], params[:branch_name], github_payload)
-end
-
-post '/github-build' do
-  github_payload = JSON.parse(params[:github_payload])
-  
-  repository_name = github_payload["repository"]["name"]
-  branch_name = github_payload["ref"].gsub(/refs\/heads\//, '')
-    
-  q_name = "#{repository_name}-#{branch_name}"
-  
-  Octopusci::CONFIG["projects"].each do |proj|
-    if (proj['name'] == repository_name) # TODO: Add checking for project owner as well so that it won't build other peoples repos.
-      # Append job to this branches queue
-      Resque.push(q_name, :class => 'DrewSleep', :args => ['/tmp/pusci_cmds.sh', github_payload])
-      break
-    end
-  end
-end
-
+Vegas::Runner.new(Octopusci::Server, 'octopusci')

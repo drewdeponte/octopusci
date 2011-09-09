@@ -1,3 +1,5 @@
+require 'resque'
+
 module Octopusci
   module Queue
     def self.enqueue(job_klass, proj_name, branch_name, github_payload)

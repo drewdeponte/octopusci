@@ -14,14 +14,17 @@ Gem::Specification.new do |s|
   s.files       += Dir.glob("bin/**/*")
   s.files       += Dir.glob("man/**/*")
   s.files       += Dir.glob("spec/**/*")
+  s.executables = [ "octopusci" ]
   
   s.add_dependency 'sinatra'
+  s.add_dependency 'vegas'
   s.add_dependency 'json'
   s.add_dependency 'resque'
   s.add_dependency 'actionmailer'
   
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'
+  s.add_development_dependency 'rack-test'
   s.add_development_dependency 'guard'
   s.add_development_dependency 'rb-fsevent'
   s.add_development_dependency 'growl'

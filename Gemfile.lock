@@ -6,6 +6,7 @@ PATH
       json
       resque
       sinatra
+      vegas
 
 GEM
   remote: http://rubygems.org/
@@ -98,6 +99,7 @@ DEPENDENCIES
   guard
   guard-rspec
   octopusci!
+  rack-test
   rake
   rb-fsevent
   rspec
