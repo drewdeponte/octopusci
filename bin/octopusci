@@ -11,19 +11,7 @@ require 'resque'
 
 require 'octopusci'
 
-Octopusci.configure("/etc/octopusci.yml")
-
-# class MyTestJob < Octopusci::Job
-# 
-# end
-
-# f = File.open('/tmp/pusci_cmds.sh', 'w')
-# f.write("""#!/bin/bash
-# echo 'foo bar titty'
-# exit 0
-# """)
-# f.chmod(0775)
-# f.close()
+Octopusci::StageLocker.load(Octopusci::CONFIG['stages'])
 
 get '/:project_name/:branch_name/manbuild' do
   github_payload = {}

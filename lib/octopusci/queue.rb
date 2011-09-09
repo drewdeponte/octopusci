@@ -14,7 +14,9 @@ module Octopusci
 
     def self.lismember(queue, item)
       size = Resque.size(queue)
-      Resque.peek(queue, 0, size).any? { |v| v == item }      
+      [Resque.peek(queue, 0, size)].flatten.any? { |v|
+        v == item
+      }
     end
     
     def self.github_payload(project_name, branch_name)
