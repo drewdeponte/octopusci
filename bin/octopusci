@@ -11,7 +11,9 @@ require 'resque'
 
 require 'octopusci'
 
-Octopusci::StageLocker.load(Octopusci::CONFIG['stages'])
+if Octopusci::CONFIG.has_key?('stages')
+  Octopusci::StageLocker.load(Octopusci::CONFIG['stages'])
+end
 
 get '/:project_name/:branch_name/manbuild' do
   github_payload = {}

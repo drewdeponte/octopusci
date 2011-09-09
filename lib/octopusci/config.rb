@@ -30,6 +30,10 @@ module Octopusci
       @options[key_name.to_s()] = value
     end
     
+    def has_key?(key_name)
+      return @options.has_key?(key_name)
+    end
+    
     # allow options to be read and set using method calls.  This capability is primarily for
     # allowing the configuration to be defined through a block passed to the configure() function
     # from an initializer or similar file.

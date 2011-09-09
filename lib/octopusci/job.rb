@@ -5,9 +5,11 @@ module Octopusci
     end
 
     def self.perform(project_name, branch_name)
-      # Get the next available stage from redis which locks it by removing it
-      # from the list of available
-      stage = Octopusci::StageLocker.pop
+      if Octopusci::CONFIG.has_key?('stages')
+        # Get the next available stage from redis which locks it by removing it
+        # from the list of available
+        stage = Octopusci::StageLocker.pop
+      end
             
       begin
         # Using redis to get the associated github_payload
@@ -16,8 +18,10 @@ module Octopusci
         # Run the commit run and report about status and output
         self.run(github_payload, stage)
       ensure
-        # Unlock the stage by adding it back to the list of available stages
-        Octopusci::StageLocker.push(stage)
+        if Octopusci::CONFIG.has_key?('stages')
+          # Unlock the stage by adding it back to the list of available stages
+          Octopusci::StageLocker.push(stage)
+        end
       end
     end    
   end
