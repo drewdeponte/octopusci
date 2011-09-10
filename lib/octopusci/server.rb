@@ -12,9 +12,14 @@ module Octopusci
     set :public, "#{dir}/server/public"
     set :static, true
     
-    if Octopusci::CONFIG.has_key?('stages')
-      Octopusci::StageLocker.load(Octopusci::CONFIG['stages'])
+    def initialize
+      if Octopusci::CONFIG.has_key?('stages')
+        Octopusci::StageLocker.load(Octopusci::CONFIG['stages'])
+      end
+      
+      super    
     end
+    
     
     get '/test' do
       erb :hello_world

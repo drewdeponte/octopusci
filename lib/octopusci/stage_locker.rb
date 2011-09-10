@@ -1,3 +1,5 @@
+require 'resque'
+
 module Octopusci
   module StageLocker
     def self.load(stages)

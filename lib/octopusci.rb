@@ -4,8 +4,7 @@ require 'octopusci/queue'
 require 'octopusci/stage_locker'
 require 'octopusci/job'
 require 'octopusci/config'
-
-Octopusci.configure("/etc/octopusci.yml")
+require 'octopusci/worker_launcher'
 
 module Octopusci
   def self.greet
