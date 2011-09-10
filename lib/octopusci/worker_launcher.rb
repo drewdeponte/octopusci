@@ -9,12 +9,16 @@ module Octopusci
       threads = []
       
       Octopusci.configure("/etc/octopusci.yml")
+      
+      if Octopusci::CONFIG['stages'] == nil
+        raise "You have defined stages as an option but have no items in it."
+      end
+      
       Octopusci::CONFIG['stages'].size.times do
         # threads << Thread.new do
         cur_pid = Process.fork do
           queues = ['commit']
           worker = Resque::Worker.new(*queues)
-          worker.verbose = true
           worker.log "Starting worker #{worker}"
           worker.work(5)
         end
