@@ -17,7 +17,6 @@ Gem::Specification.new do |s|
   s.executables = [ "octopusci" ]
   
   s.add_dependency 'sinatra'
-  s.add_dependency 'vegas'
   s.add_dependency 'json'
   s.add_dependency 'resque'
   s.add_dependency 'actionmailer'

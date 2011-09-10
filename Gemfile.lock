@@ -6,7 +6,6 @@ PATH
       json
       resque
       sinatra
-      vegas
 
 GEM
   remote: http://rubygems.org/
