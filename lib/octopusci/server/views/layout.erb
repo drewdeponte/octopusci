@@ -13,6 +13,7 @@
         background-image: url(/images/noise.gif);
         padding: 0;
         margin: 0;
+        min-width: 960px;
       }
       
       #header {
@@ -37,11 +38,55 @@
         background-color: #F9F9F9;
         margin: 20px;
       }
+      
+      .job_title {
+        font-weight: bold;
+        margin-bottom: 0px;
+        color: #333;
+        float: left;
+      }
+      
+      a {
+        color: #333;
+      }
+      
+      .job_header, .job_content {
+        margin: 10px;
+      }
+      
+      .created_on {
+        font-size: 10px;
+        text-transform: uppercase;
+        float: right;
+      }
+      
+      #logo {
+        margin-top: 5px;
+        margin-left: 10px;
+        float: left;
+      }
+      
+      #main_nav {
+        font-size: 11px;
+        float: right;
+        width: 500px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        margin-right: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        background-color: white;
+        border-radius: 8px;
+      }
     </style>
   </head>
   <body>
     <div id="header">
-      <span style="margin-left: 10px;">Octopusci</span>
+      <div id="logo">Octopusci</div>
+      <div id="main_nav">
+        <a href="/resque">Resque</a>
+      </div>
+      <div style="clear: both;"></div>
     </div>
     <div id="main_content_area">
       <%= yield %>      

@@ -1,7 +1,21 @@
 <% @jobs.each do |j| %>
   <div class="job">
-    <%= j.id %>
-    <%= j.ref %>
-    <%= j.successful %>
+    <div class="job_header">
+      <div class="job_title">
+        <a href="#"><%= j.repo_name %>/<%= j.branch_name %></a>
+      </div>
+      <div class="created_on">
+        <%= j.created_at.strftime('%A, %B %d, %Y AT %I:%M%p') %>
+      </div>
+      <div style="clear: both;"></div>
+    </div>
+    <div class="job_content">
+      
+      Job: <%= j.id %></br>
+      Finished: -</br>
+      Duration: -</br>
+      Compare: -</br>
+      Pusher: -</br>    
+    </div>
   </div>
 <% end %>
