@@ -1,0 +1,67 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
+
+require 'rubygems'
+require 'optparse'
+require 'octopusci'
+
+# This hash will hold all of the options
+# parsed from the command-line by
+# OptionParser.
+options = {}
+
+optparse = OptionParser.new do|opts|
+  # Set a banner, displayed at the top
+  # of the help screen.
+  opts.banner = "Usage: pusci-stage [options] stage_name"
+
+  # Define the options, and what they do
+  options[:add] = false
+  opts.on('-a', '--add', 'Add a stage back into the pool') do
+    options[:add] = true
+  end
+
+  options[:rem] = false
+  opts.on( '-r', '--rem', 'Rem a stage from the pool' ) do
+    options[:rem] = true
+  end
+
+  options[:list] = false
+  opts.on( '-l', '--list', 'List all stages' ) do
+    options[:list] = true
+  end
+
+  options[:pool] = false
+  opts.on( '-p', '--pool', 'List all stages currently in the pool' ) do
+    options[:pool] = true
+  end
+
+  # This displays the help screen, all programs are
+  # assumed to have this option.
+  opts.on( '-h', '--help', 'Display the help screen' ) do
+    puts opts
+    exit
+  end
+end
+
+# Parse the command-line. Remember there are two forms
+# of the parse method. The 'parse' method simply parses
+# ARGV, while the 'parse!' method parses ARGV and removes
+# any options found there, as well as any parameters for
+# the options. What's left is the list of files to resize.
+optparse.parse!
+
+if options[:list] == true
+  Octopusci::StageLocker.stages.each do |s|
+    puts s
+  end
+elsif options[:pool] == true
+  puts Octopusci::StageLocker.pool
+elsif options[:add] == true
+  Octopusci::StageLocker.push(ARGV[0])
+elsif options[:rem] == true
+  Octopusci::StageLocker.rem(ARGV[0])
+end
+
+exit

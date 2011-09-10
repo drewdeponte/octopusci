@@ -15,8 +15,21 @@ module Octopusci
       Resque.redis.lpop('octopusci:stagelocker')
     end
     
+    def self.rem(v)
+      Resque.redis.lrem('octopusci:stagelocker', 1, v)
+    end
+    
     def self.push(v)
       Resque.redis.rpush('octopusci:stagelocker', v)
+    end
+    
+    def self.stages
+      Octopusci::CONFIG['stages']
+    end
+    
+    def self.pool
+      len = Resque.size('octopusci:stagelocker')
+      Resque.peek('octopusci:stagelocker', 0, len)
     end
   end
 end

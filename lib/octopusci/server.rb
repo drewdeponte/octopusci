@@ -17,7 +17,7 @@ module Octopusci
         Octopusci::StageLocker.load(Octopusci::CONFIG['stages'])
       end
       
-      super    
+      super
     end
     
     
@@ -45,6 +45,7 @@ module Octopusci
 
       Octopusci::CONFIG["projects"].each do |proj|
         if (proj['name'] == repository_name) # TODO: Add checking for project owner as well so that it won't build other peoples repos.
+          Octopusci::Queue.enqueue(proj["job_klass"])
           # Append job to this branches queue
           Resque.push(q_name, :class => 'DrewSleep', :args => ['/tmp/pusci_cmds.sh', github_payload])
           break

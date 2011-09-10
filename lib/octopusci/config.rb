@@ -68,5 +68,18 @@ module Octopusci
       :raise_delivery_errors => Octopusci::CONFIG['smtp']['raise_delivery_errors']
     }
     Notifier.logger = Logger.new(STDOUT)
-  end  
+  end
+end
+
+Octopusci.configure("/etc/octopusci/config.yml")
+
+if Octopusci::CONFIG['stages'] == nil
+  raise "You have defined stages as an option but have no items in it."
+end
+
+Dir.open(Octopusci::CONFIG['general']['jobs_path']) do |d|
+  job_file_names = d.entries.reject { |e| e == '..' || e == '.' }
+  job_file_names.each do |f_name|
+    require Octopusci::CONFIG['general']['jobs_path'] + "/#{f_name}"
+  end
 end
