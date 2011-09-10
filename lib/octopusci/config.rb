@@ -1,4 +1,5 @@
 require 'octopusci/notifier'
+require 'active_record'
 
 module Octopusci
   class Config
@@ -71,11 +72,20 @@ module Octopusci
   end
 end
 
+# Load the actual config file
 Octopusci.configure("/etc/octopusci/config.yml")
 
 if Octopusci::CONFIG['stages'] == nil
   raise "You have defined stages as an option but have no items in it."
 end
+
+ActiveRecord::Base.establish_connection(
+  :adapter => Octopusci::CONFIG['db']['adapter'],
+  :host => Octopusci::CONFIG['db']['host'],
+  :database => Octopusci::CONFIG['db']['database'],
+  :username => Octopusci::CONFIG['db']['username'],
+  :password => Octopusci::CONFIG['db']['password']
+)
 
 Dir.open(Octopusci::CONFIG['general']['jobs_path']) do |d|
   job_file_names = d.entries.reject { |e| e == '..' || e == '.' }

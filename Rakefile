@@ -1,6 +1,14 @@
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/lib')
-require 'octopusci'
 
+task(:environment) do
+  require 'octopusci'
+end
 
-
-require 'resque/tasks'
+namespace :db do
+  desc "Migrate the database"
+  task(:migrate => :environment) do
+    ActiveRecord::Base.logger = Logger.new(STDOUT)
+    ActiveRecord::Migration.verbose = true
+    ActiveRecord::Migrator.migrate("db/migrate")
+  end
+end
