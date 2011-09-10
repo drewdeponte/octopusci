@@ -21,6 +21,11 @@ module Octopusci
     end
     
     
+    get '/' do
+      @jobs = ::Job.order('jobs.created_at DESC').limit(20)
+      erb :index
+    end
+    
     get '/test' do
       erb :hello_world
     end

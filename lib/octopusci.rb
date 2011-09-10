@@ -1,4 +1,5 @@
 require 'octopusci/version'
+require 'octopusci/schema'
 require 'octopusci/notifier'
 require 'octopusci/queue'
 require 'octopusci/stage_locker'
