@@ -1,5 +1,5 @@
 require 'octopusci/version'
-require 'ocotpusci/helpers'
+require 'octopusci/helpers'
 require 'octopusci/schema'
 require 'octopusci/notifier'
 require 'octopusci/queue'
