@@ -1,6 +1,6 @@
 require 'bundler/setup'
 require 'sinatra/base'
-require 'json'
+# require 'json'
 require 'erb'
 require 'octopusci'
 
@@ -40,21 +40,28 @@ module Octopusci
     end
 
     post '/github-build' do
-      github_payload = JSON.parse(params[:payload])
-
-      repository_name = github_payload["repository"]["name"]
-      branch_name = github_payload["ref"].gsub(/refs\/heads\//, '')
-
-      q_name = "#{repository_name}-#{branch_name}"
-
-      Octopusci::CONFIG["projects"].each do |proj|
-        if (proj['name'] == repository_name) # TODO: Add checking for project owner as well so that it won't build other peoples repos.
-          Octopusci::Queue.enqueue(proj["job_klass"])
-          # Append job to this branches queue
-          Resque.push(q_name, :class => 'DrewSleep', :args => ['/tmp/pusci_cmds.sh', github_payload])
-          break
-        end
+      github_payload = JSON.parse(params["payload"])
+      
+      # Make sure that the request is for a project Octopusci knows about
+      if !Octopusci::Helpers.managed_project?(github_payload["repository"]["name"], github_payload["repository"]["owner"]["name"])
+        return 404
       end
+      
+      # repository_name = github_payload["repository"]["name"]
+      # branch_name = github_payload["ref"].gsub(/refs\/heads\//, '')
+      # 
+      # 
+      # q_name = "#{repository_name}-#{branch_name}"
+      # 
+      # Octopusci::CONFIG["projects"].each do |proj|
+      #   if (proj['name'] == repository_name) # TODO: Add checking for project owner as well so that it won't build other peoples repos.
+      #     Octopusci::Queue.enqueue(proj["job_klass"])
+      #     # Append job to this branches queue
+      #     Resque.push(q_name, :class => 'DrewSleep', :args => ['/tmp/pusci_cmds.sh', github_payload])
+      #     break
+      #   end
+      # end
     end
+        
   end
 end

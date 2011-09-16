@@ -5,7 +5,7 @@ require 'rack/test'
 Octopusci::Server.set :environment, :test
 
 def app
-  Octopusci::Server.new
+  Octopusci::Server
 end
 
 include Rack::Test::Methods

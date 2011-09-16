@@ -30,5 +30,17 @@ module Octopusci
       
       return attrs
     end
+    
+    # Determine if a project given name and owner is a project that the
+    # currently configured instance of Octopusci is resposible for managing.
+    def self.managed_project?(project_name, project_owner)
+      Octopusci::CONFIG["projects"].each do |proj|
+        if (proj['name'] == project_name) && (proj['owner'] == project_owner)
+          return true
+        end
+      end
+      return false
+    end
+    
   end
 end
