@@ -1,6 +1,6 @@
 require 'bundler/setup'
 require 'sinatra/base'
-# require 'json'
+require 'multi_json'
 require 'erb'
 require 'octopusci'
 
@@ -25,10 +25,6 @@ module Octopusci
       erb :index
     end
     
-    get '/test' do
-      erb :hello_world
-    end
-
     get '/:project_name/:branch_name/manbuild' do
       github_payload = {}
       # q_name = params[:project_name] + '-' + params[:branch_name]
@@ -40,27 +36,21 @@ module Octopusci
     end
 
     post '/github-build' do
-      github_payload = JSON.parse(params["payload"])
-      
+      if params['payload'].nil?
+        raise "No payload paramater found, it is a required parameter."
+      end
+      github_payload = Octopusci::Helpers.decode(params["payload"])
+            
       # Make sure that the request is for a project Octopusci knows about
-      if !Octopusci::Helpers.managed_project?(github_payload["repository"]["name"], github_payload["repository"]["owner"]["name"])
+      proj_info = Octopusci::Helpers.get_project_info(github_payload["repository"]["name"], github_payload["repository"]["owner"]["name"])
+      if proj_info.nil?
         return 404
       end
       
-      # repository_name = github_payload["repository"]["name"]
-      # branch_name = github_payload["ref"].gsub(/refs\/heads\//, '')
-      # 
-      # 
-      # q_name = "#{repository_name}-#{branch_name}"
-      # 
-      # Octopusci::CONFIG["projects"].each do |proj|
-      #   if (proj['name'] == repository_name) # TODO: Add checking for project owner as well so that it won't build other peoples repos.
-      #     Octopusci::Queue.enqueue(proj["job_klass"])
-      #     # Append job to this branches queue
-      #     Resque.push(q_name, :class => 'DrewSleep', :args => ['/tmp/pusci_cmds.sh', github_payload])
-      #     break
-      #   end
-      # end
+      branch_name = github_payload["ref"].gsub(/refs\/heads\//, '')
+      
+      # Queue the job appropriately
+      Octopusci::Queue.enqueue(proj_info['job_klass'], github_payload["repository"]["name"], branch_name, github_payload)
     end
         
   end

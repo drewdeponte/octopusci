@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'actionmailer'
   s.add_dependency 'activerecord'
   s.add_dependency 'mysql'
+  s.add_dependency 'multi_json'
   
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'

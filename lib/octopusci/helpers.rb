@@ -1,5 +1,8 @@
 module Octopusci
   module Helpers
+    # Take the github payload hash and translate it to the Job model's attrs
+    # so that we can easily use the github payload hash to update_attributes
+    # on the Job mode.l
     def self.gh_payload_to_job_attrs(gh_pl)
       attrs = {}
             
@@ -31,16 +34,25 @@ module Octopusci
       return attrs
     end
     
-    # Determine if a project given name and owner is a project that the
-    # currently configured instance of Octopusci is resposible for managing.
-    def self.managed_project?(project_name, project_owner)
+    # Get the information specified in the config about this project. If
+    # project info can't be found for the given project_name and project_owner
+    # this method returns nil. Otherwise, this project returns a hash of the
+    # project info that it found in the config.
+    def self.get_project_info(project_name, project_owner)
       Octopusci::CONFIG["projects"].each do |proj|
         if (proj['name'] == project_name) && (proj['owner'] == project_owner)
-          return true
+          return proj
         end
       end
-      return false
+      return nil
     end
     
+    def self.decode(str)
+      ::MultiJson.decode(str)
+    end
+    
+    def self.encode(str)
+      ::MultiJson.encode(str)
+    end
   end
 end
