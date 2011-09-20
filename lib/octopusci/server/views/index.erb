@@ -2,7 +2,7 @@
   <div class="job">
     <div class="job_header">
       <div class="job_title">
-        <a href="<%= j.payload['repository']['url'] %>"><%= j.repo_name %></a> / <a href="#"><%= j.branch_name %></a>
+        <a href="<%= j.payload['repository']['url'] %>"><%= j.repo_name %></a> / <a href="/<%= j.repo_name %>/<%= j.payload['ref'].gsub('refs/heads/', '') %>"><%= j.branch_name %></a>
       </div>
       <div class="created_on">
         <%= j.created_at.strftime('%A, %B %d, %Y AT %I:%M%p') %>

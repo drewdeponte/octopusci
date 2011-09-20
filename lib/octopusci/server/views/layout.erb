@@ -117,8 +117,11 @@
   </head>
   <body>
     <div id="header">
-      <div id="logo">Octopusci</div>
+      <div id="logo">
+        Octopusci <% if @page_logo %> - <%= @page_logo %><% end %>
+      </div>
       <div id="main_nav">
+        <a href="/">Dashboard</a>
         <a href="/resque" target="_blank">Resque</a>
       </div>
       <div style="clear: both;"></div>

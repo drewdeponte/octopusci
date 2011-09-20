@@ -25,6 +25,12 @@ module Octopusci
       erb :index
     end
     
+    get '/:repo_name/:branch_name' do
+      @page_logo = "#{params[:repo_name]} / #{params[:branch_name]}"
+      @jobs = ::Job.where(:repo_name => params[:repo_name], :ref => "refs/heads/#{params[:branch_name]}").order('jobs.created_at DESC').limit(20)
+      erb :index
+    end
+    
     get '/:project_name/:branch_name/manbuild' do
       github_payload = {}
       # q_name = params[:project_name] + '-' + params[:branch_name]
