@@ -53,10 +53,14 @@ module Octopusci
         return 404
       end
       
-      branch_name = github_payload["ref"].gsub(/refs\/heads\//, '')
+      if github_payload["ref"] =~ /refs\/heads\//
+        branch_name = github_payload["ref"].gsub(/refs\/heads\//, '')
       
-      # Queue the job appropriately
-      Octopusci::Queue.enqueue(proj_info['job_klass'], github_payload["repository"]["name"], branch_name, github_payload, proj_info)
+        # Queue the job appropriately
+        Octopusci::Queue.enqueue(proj_info['job_klass'], github_payload["repository"]["name"], branch_name, github_payload, proj_info)
+      else
+        return 200
+      end
     end
         
   end

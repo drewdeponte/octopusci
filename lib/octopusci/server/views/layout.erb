@@ -94,6 +94,31 @@
         line-height: 1.2em;
         display: none;
       }
+      
+      .status {
+        overflow: visible;
+/*        position: absolute;
+        top: -5px;
+        left: 0;
+*/      background: url("../images/status.png");
+        float: left;
+        width: 26px;
+        height: 26px;
+        display: inline-block;
+        margin: 0 0 0 0;
+      }
+      
+      .success {
+        background-position: 0px 0px;
+      }
+      
+      .failure {
+        background-position: 0px -26px;
+      }
+      
+      .running {
+        background-position: 0px -52px;
+      }
     </style>
     <script type="text/javascript" charset="utf-8">
       $(document).ready(function () {
