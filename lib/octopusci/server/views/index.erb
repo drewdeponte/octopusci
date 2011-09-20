@@ -2,7 +2,7 @@
   <div class="job">
     <div class="job_header">
       <div class="job_title">
-        <a href="#"><%= j.repo_name %>/<%= j.branch_name %></a>
+        <a href="<%= %>"><%= j.repo_name %> / <%= j.branch_name %></a>
       </div>
       <div class="created_on">
         <%= j.created_at.strftime('%A, %B %d, %Y AT %I:%M%p') %>
@@ -10,12 +10,65 @@
       <div style="clear: both;"></div>
     </div>
     <div class="job_content">
-      
-      Job: <%= j.id %></br>
-      Finished: <%= j.ended_at.ago_in_words %></br>
-      Duration: <%= j.ended_at - j.started_at %></br>
-      Compare: <%= j.compare %></br>
-      Pusher: <%= j.payload['pusher']['name'] %></br>   
+      <table>
+        <tr>
+          <td style="text-align: right;">Job:</td>
+          <td style="width: 200px;"><%= j.id %></td>
+          <td style="text-align: right;">Before Commit:</td>
+          <td>
+            <% if !j.payload['created'] %>
+              <%= j.payload['before'] %>
+            <% else %>
+              No before commit, remote branch was created with this push.
+            <% end %>
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: right;">Finished:</td>
+          <td>
+            <% if j.ended_at %>
+              <%= j.ended_at.ago_in_words %>
+            <% else %>
+              -
+            <% end %>
+          </td>
+          <td style="text-align: right;">After Commit:</td>
+          <td>
+            <%= j.payload['after'] %>
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: right;">Duration:</td>
+          <td>
+            <% if j.ended_at && j.started_at %>
+              <%= j.ended_at - j.started_at %>
+            <% else %>
+              -
+            <% end %>
+          </td>
+          <td style="text-align: right;">Compare:</td>
+          <td><a href="<%= j.compare %>"><%= j.compare %></a></td>
+        </tr>
+        <tr>
+          <td style="text-align: right;">Output:</td>
+          <td><a class="show_hide_job_output" href="#">show</a></td>
+          <td style="text-align: right;">Pusher:</td>
+          <td>
+            <% if j.payload['pusher']['email'] %>
+              <a href="mailto:<%= j.payload['pusher']['name'] %>"><%= j.payload['pusher']['name'] %></a>
+            <% else %>
+              <%= j.payload['pusher']['name'] %>
+            <% end %>
+          </td>
+        </tr>
+      </table>
+      <div class="job_output">
+        <pre>
+          <code>
+            <%= j.output %>
+          </code>
+        </pre>
+      </div>
     </div>
   </div>
 <% end %>

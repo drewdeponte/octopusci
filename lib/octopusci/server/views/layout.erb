@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html>
   <head>
+    <script src="/javascripts/jquery-1.6.4.min.js" type="text/javascript"></script>
     <style type="text/css" media="screen">      
       body {
         font-family: 'Helvetica', serif;
@@ -78,7 +79,41 @@
         background-color: white;
         border-radius: 8px;
       }
+      
+      .job_content {
+        font-size: 12px;
+        line-height: 1.2em;
+      }
+      
+      .job_output {
+        padding: 10px;
+        background-color: #333;
+        color: white;
+        overflow: scroll;
+        font-size: 12px;
+        line-height: 1.2em;
+        display: none;
+      }
     </style>
+    <script type="text/javascript" charset="utf-8">
+      $(document).ready(function () {
+        $("a.show_hide_job_output").click(function() {
+          // $("a.show_hide_job_output ~ div.job_output").hide();
+          // $("a.show_hide_job_output").text('show');
+          $('a.show_hide_job_output').not(this).html('show');
+          $('.job_output').not(this).hide();
+          
+          if ($(this).html() == 'show') {
+            $(this).html('hide');
+            $(this).closest('.job_content').find('.job_output').show();
+          } else {
+            $(this).html('show');
+            $(this).closest('.job_content').find('.job_output').hide();
+          }
+          return false;
+        });
+      });
+    </script>
   </head>
   <body>
     <div id="header">

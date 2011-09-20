@@ -1,10 +1,10 @@
 module Octopusci
   class Job
-    def self.run(github_payload, stage, job_id)
+    def self.run(github_payload, stage, job_id, job_conf)
       raise PureVirtualMethod, "The self.commit_run method needs to be defined on your Octopusci::Job."
     end
 
-    def self.perform(project_name, branch_name, job_id)
+    def self.perform(project_name, branch_name, job_id, job_conf)
       if Octopusci::CONFIG.has_key?('stages')
         # Get the next available stage from redis which locks it by removing it
         # from the list of available
@@ -24,7 +24,7 @@ module Octopusci
         
         # Run the commit run and report about status and output
         Bundler.with_clean_env {
-          self.run(github_payload, stage, job_id)
+          self.run(github_payload, stage, job_id, job_conf)
         }
         
         if job

@@ -50,7 +50,7 @@ module Octopusci
       branch_name = github_payload["ref"].gsub(/refs\/heads\//, '')
       
       # Queue the job appropriately
-      Octopusci::Queue.enqueue(proj_info['job_klass'], github_payload["repository"]["name"], branch_name, github_payload)
+      Octopusci::Queue.enqueue(proj_info['job_klass'], github_payload["repository"]["name"], branch_name, github_payload, proj_info)
     end
         
   end

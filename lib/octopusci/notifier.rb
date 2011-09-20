@@ -10,18 +10,22 @@ module Octopusci
     def job_complete(recipient, cmd_output, cmd_status, github_payload, job_id)
       @job = ::Job.find(job_id)
       @job.output = cmd_output
+      @job.running = false
       if cmd_status == 0
         @job.successful = true
       else
         @job.successful = false
       end
       @job.save
-      @cmd_output = cmd_output
-      @cmd_status = cmd_status
-      @github_payload = github_payload
-      mail(:to => recipient, :subject => "Octopusci Job Complete") do |format|
-        format.text
-        format.html
+      
+      if recipient
+        @cmd_output = cmd_output
+        @cmd_status = cmd_status
+        @github_payload = github_payload
+        mail(:to => recipient, :subject => "#{@job.repo_name} Build Complete") do |format|
+          format.text
+          format.html
+        end
       end
     end
   end

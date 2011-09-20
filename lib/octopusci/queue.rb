@@ -2,7 +2,7 @@ require 'resque'
 
 module Octopusci
   module Queue
-    def self.enqueue(job_klass, proj_name, branch_name, github_payload)
+    def self.enqueue(job_klass, proj_name, branch_name, github_payload, job_conf)
       resque_opts = { "class" => job_klass, "args" => [proj_name, branch_name] }
       gh_pl_key = github_payload_key(proj_name, branch_name)
 
@@ -17,6 +17,7 @@ module Octopusci
         # Create a new job for this project with the appropriate data
         job = ::Job.create(Octopusci::Helpers.gh_payload_to_job_attrs(github_payload).merge({ :running => false }))
         resque_opts["args"] << job.id
+        resque_opts["args"] << job_conf
         Resque.redis.set(gh_pl_key, Resque::encode(github_payload))
         Resque.push('commit', resque_opts)
       end
