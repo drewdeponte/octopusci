@@ -31,6 +31,8 @@ module Octopusci
       # after_commit
       attrs[:after_commit] = gh_pl["after"]
       
+      attrs[:payload] = gh_pl
+      
       return attrs
     end
     

@@ -1,3 +1,5 @@
+require 'time-ago-in-words'
+
 require 'octopusci/version'
 require 'octopusci/helpers'
 require 'octopusci/schema'

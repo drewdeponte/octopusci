@@ -12,10 +12,10 @@
     <div class="job_content">
       
       Job: <%= j.id %></br>
-      Finished: -</br>
-      Duration: -</br>
-      Compare: -</br>
-      Pusher: -</br>    
+      Finished: <%= j.ended_at.ago_in_words %></br>
+      Duration: <%= j.ended_at - j.started_at %></br>
+      Compare: <%= j.compare %></br>
+      Pusher: <%= j.payload['pusher']['name'] %></br>   
     </div>
   </div>
 <% end %>
