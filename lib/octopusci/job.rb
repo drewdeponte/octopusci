@@ -15,8 +15,10 @@ module Octopusci
         # Using redis to get the associated github_payload
         github_payload = Octopusci::Queue.github_payload(project_name, branch_name)
         
-        # Run the commit run and report about status and output
-        self.run(github_payload, stage, job_id)
+        Bundler.with_clean_env {
+          # Run the commit run and report about status and output
+          self.run(github_payload, stage, job_id)
+        }
       ensure
         if Octopusci::CONFIG.has_key?('stages')
           # Unlock the stage by adding it back to the list of available stages
