@@ -20,6 +20,10 @@ if !File.exists?(CONFIG_PATH)
     f << "general:
   jobs_path: \"/etc/octopusci/jobs\"
 
+http_basic:
+  username: admin
+  password: admin
+
 smtp:
   notification_from_email: somefrom@example.com
   address: smtp.gmail.com

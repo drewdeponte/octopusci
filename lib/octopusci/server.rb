@@ -1,4 +1,3 @@
-require 'bundler/setup'
 require 'sinatra/base'
 require 'multi_json'
 require 'erb'
@@ -20,27 +19,33 @@ module Octopusci
       super
     end
     
+    helpers do
+      def protected!
+        unless authorized?
+          response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
+          throw(:halt, [401, "Not authorized\n"])
+        end
+      end
+
+      def authorized?
+        @auth ||=  Rack::Auth::Basic::Request.new(request.env)        
+        @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [ Octopusci::CONFIG['http_basic']['username'], Octopusci::CONFIG['http_basic']['password'] ]
+      end
+    end
+    
     get '/' do
+      protected!
       @jobs = ::Job.order('jobs.created_at DESC').limit(20)
       erb :index
     end
     
     get '/:repo_name/:branch_name' do
+      protected!
       @page_logo = "#{params[:repo_name]} / #{params[:branch_name]}"
       @jobs = ::Job.where(:repo_name => params[:repo_name], :ref => "refs/heads/#{params[:branch_name]}").order('jobs.created_at DESC').limit(20)
       erb :index
     end
     
-    get '/:project_name/:branch_name/manbuild' do
-      github_payload = {}
-      # q_name = params[:project_name] + '-' + params[:branch_name]
-      # puts "#{q_name} - Queue Size: #{Resque.size(q_name)}"
-      # Resque.push(q_name, :class => 'Octopusci::Job', :args => ['/tmp/pusci_cmds.sh', github_payload])
-      # Use redis to store 'payload:foo' as the git
-
-      Octopusci::Queue.enqueue('MyTestJob', params[:project_name], params[:branch_name], github_payload)
-    end
-
     post '/github-build' do
       if params['payload'].nil?
         raise "No payload paramater found, it is a required parameter."
