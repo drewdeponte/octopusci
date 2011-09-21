@@ -9,6 +9,6 @@ namespace :db do
   task(:migrate => :environment) do
     ActiveRecord::Base.logger = Logger.new(STDOUT)
     ActiveRecord::Migration.verbose = true
-    ActiveRecord::Migrator.migrate("db/migrate")
+    ActiveRecord::Migrator.migrate(File.expand_path(File.dirname(__FILE__) + "/db/migrate"))
   end
 end

@@ -1,20 +1,24 @@
+$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/lib')
+
+require 'octopusci/version'
+
 Gem::Specification.new do |s|
   s.name        = 'octopusci'
   s.platform    = Gem::Platform::RUBY
-  s.version     = '0.0.1'
-  s.date        = '2011-09-07'
-  s.summary     = 'A continuous integration application using Sinatra.'
-  s.description = 'A multi-branch Continous Integration server that integrates with GitHub'
+  s.version     = Octopusci::VERSION
+  s.summary     = %q{A continuous integration application using Sinatra.}
+  s.description = %q{A multi-branch Continous Integration server that integrates with GitHub}
   s.authors     = ['Andrew De Ponte']
   s.email       = ['cyphactor@gmail.com']
   s.homepage    = 'https://github.com/cyphactor/octopusci'
   
-  s.files       = %w( README Rakefile LICENSE )
+  s.files       = %w( README LICENSE config.ru )
   s.files       += Dir.glob("lib/**/*")
   s.files       += Dir.glob("bin/**/*")
   s.files       += Dir.glob("man/**/*")
   s.files       += Dir.glob("spec/**/*")
-  s.executables = [ "octopusci", "octopusci-tentacles" ]
+  s.files       += Dir.glob("db/**/*")
+  s.executables = [ "octopusci-tentacles", "octopusci-skel", "octopusci-db-migrate" ]
   
   s.add_dependency 'sinatra'
   s.add_dependency 'json'

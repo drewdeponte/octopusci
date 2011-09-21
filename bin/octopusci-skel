@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
+
+require 'rubygems'
+require 'fileutils'
+
+if Process.uid != 0
+  puts "Must run as root"
+  exit 1
+end
+
+JOBS_PATH = '/etc/octopusci/jobs'
+CONFIG_PATH = '/etc/octopusci/config.yml'
+
+FileUtils.mkdir_p(JOBS_PATH)
+
+if !File.exists?(CONFIG_PATH)
+  File.open(CONFIG_PATH, 'w') do |f|
+    f << "general:
+  jobs_path: \"/etc/octopusci/jobs\"
+
+smtp:
+  notification_from_email: somefrom@example.com
+  address: smtp.gmail.com
+  port: 587
+  authentication: plain
+  enable_starttls_auto: true
+  user_name: someuser@example.com
+  password: somepassword
+  raise_delivery_errors: true
+
+db:
+  adapter: mysql
+  host: localhost
+  database: octopusci
+  username: someusername
+  password: somepassword
+
+projects:
+  - { name: octopusci, owner: cyphactor, job_klass: SomeJobClass, repo_uri: 'git@github.com:cyphactor/octopusci.git', default_email: devs@example.com }
+
+stages:
+  - test_b
+    "
+  end
+  puts "Created example #{CONFIG_PATH}, please modify appropriately"
+else
+  puts "#{CONFIG_PATH} already exists, exiting to avoid modification."
+  puts "If you would like to generated the example config again please rename the existing #{CONFIG_PATH}."
+end
+
