@@ -104,7 +104,7 @@
         float: left;
         width: 26px;
         height: 26px;
-        display: inline-block;
+        display: block;
         margin: 0 0 0 0;
       }
       
@@ -152,6 +152,12 @@
       <div style="clear: both;"></div>
     </div>
     <div id="main_content_area">
+      <div style="font-size: 14px; line-height: 1.2em; margin-left: 20px;">
+        <span class="status running"></span><div style="float: left; margin-top: 6px;">Running...</div>
+        <span class="status success"></span><div style="float: left; margin-top: 6px;">Successful</div>
+        <span class="status failure"></span><div style="float: left; margin-top: 6px;">Failed</div>
+        <div style="clear: both;"></div>
+      </div>
       <%= yield %>      
     </div>
   </body>

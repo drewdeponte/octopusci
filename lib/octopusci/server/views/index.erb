@@ -2,9 +2,11 @@
   <div class="job">
     <div class="job_header">
       <div class="job_title">
-        <a href="<%= j.payload['repository']['url'] %>"><%= j.repo_name %></a>
-        /
-        <a href="/<%= j.repo_name %>/<%= j.payload['ref'].gsub('refs/heads/', '') %>"><%= j.branch_name %></a>
+        <span class="status <% if j.running %>running<% elsif j.successful %>success<% else %>failure<% end %>"></span>
+        <div style="float: left;">
+          <a href="<%= j.payload['repository']['url'] %>"><%= j.repo_name %></a> / <a href="/<%= j.repo_name %>/<%= j.payload['ref'].gsub('refs/heads/', '') %>"><%= j.branch_name %></a>
+        </div>
+        <div style="clear: both;"></div>
       </div>
       <div class="created_on">
         <%= j.created_at.strftime('%A, %B %d, %Y AT %I:%M%p') %>
@@ -54,9 +56,12 @@
         <tr>
           <td style="text-align: right;">Output:</td>
           <td>
-            <span class="status <% if j.running %>running<% elsif j.successful %>success<% else %>failure<% end %>"></span>
-            <a class="show_hide_job_output" style="float: left; margin-top: 5px;" href="#">show</a>
-            <div style="clear: both;"></div></td>
+            <% if j.running %>
+              Running... Please Wait
+            <% else %>
+              <a class="show_hide_job_output" href="#">show</a>
+            <% end %>
+          </td>
           <td style="text-align: right;">Pusher:</td>
           <td>
             <% if j.payload['pusher']['email'] %>
@@ -69,9 +74,7 @@
       </table>
       <div class="job_output">
         <pre>
-          <code>
-            <%= j.output %>
-          </code>
+          <code><%= j.output %></code>
         </pre>
       </div>
     </div>
