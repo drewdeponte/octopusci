@@ -11,7 +11,7 @@ module Octopusci
           worker.log "Starting worker #{worker}"
           worker.work(5)
         end
-        Process.detach(cur_pid)
+        Process.waitall
       end
     end
   end

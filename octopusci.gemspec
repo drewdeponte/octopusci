@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.files       += Dir.glob("bin/**/*")
   s.files       += Dir.glob("man/**/*")
   s.files       += Dir.glob("spec/**/*")
-  s.executables = [ "octopusci" ]
+  s.executables = [ "octopusci", "octopusci-tentacles" ]
   
   s.add_dependency 'sinatra'
   s.add_dependency 'json'
