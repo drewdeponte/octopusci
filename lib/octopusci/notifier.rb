@@ -22,7 +22,12 @@ module Octopusci
         @cmd_output = cmd_output
         @cmd_status = cmd_status
         @github_payload = github_payload
-        mail(:to => recipient, :subject => "#{@job.repo_name} Build Complete") do |format|
+        if @cmd_status == 0
+          @status_str = 'success'
+        else
+          @status_str = 'failed'
+        end
+        mail(:to => recipient, :subject => "Octopusci Build (#{@status_str}) - #{@job.repo_name} / #{@job.ref.gsub(/refs\/heads\//, '')}") do |format|
           format.text
           format.html
         end

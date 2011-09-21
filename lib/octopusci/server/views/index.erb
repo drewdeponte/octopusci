@@ -2,7 +2,20 @@
   <div class="job">
     <div class="job_header">
       <div class="job_title">
-        <span class="status <% if j.running %>running<% elsif j.successful %>success<% else %>failure<% end %>"></span>
+        <%
+          if j.running
+            status_class = 'running'
+          else
+            if j.successful.nil?
+              status_class = 'pending'
+            elsif j.successful == true
+              status_class = 'success'
+            else
+              status_class = 'failure'
+            end
+          end
+        %>
+        <span class="status <%= status_class %>"></span>
         <div style="float: left;">
           <a href="<%= j.payload['repository']['url'] %>"><%= j.repo_name %></a> / <a href="/<%= j.repo_name %>/<%= j.payload['ref'].gsub('refs/heads/', '') %>"><%= j.branch_name %></a>
         </div>
@@ -57,7 +70,9 @@
           <td style="text-align: right;">Output:</td>
           <td>
             <% if j.running %>
-              Running... Please Wait
+              Running...
+            <% elsif !j.running && j.successful.nil? %>
+              Pending...
             <% else %>
               <a class="show_hide_job_output" href="#">show</a>
             <% end %>

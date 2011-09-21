@@ -4,14 +4,9 @@
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
   </head>
   <body>
-    <h1>Octopusci Build</h1>
-    <h2>Command Status</h2>
-    <pre>
-      <code>
-        <%= @cmd_status %>
-      </code>
-    </pre>
-    <h2>Command Output</h2>
+    <h1>Octopusci Build (<%= @status_str %>) - <%= @job.repo_name %> / <%= @job.ref.gsub(/refs\/heads\//, '') %></h1>
+    <h2>Status: <%= @status_str %></h2>
+    <h2>Command Output:</h2>
     <pre>
       <code>
         <%= @cmd_output %>
