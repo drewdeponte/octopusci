@@ -5,6 +5,8 @@ module Octopusci
     end
 
     def self.perform(project_name, branch_name, job_id, job_conf)
+      ActiveRecord::Base.verify_active_connections!
+      
       if Octopusci::CONFIG.has_key?('stages')
         # Get the next available stage from redis which locks it by removing it
         # from the list of available

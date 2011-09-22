@@ -20,7 +20,6 @@ module Octopusci
     end
     
     before do
-      puts "Calling verify_active_connectios"
       ActiveRecord::Base.verify_active_connections!
     end
     
