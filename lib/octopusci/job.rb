@@ -23,9 +23,9 @@ module Octopusci
         end
         
         # Run the commit run and report about status and output
-        Bundler.with_clean_env {
+        # Bundler.with_clean_env {
           self.run(github_payload, stage, job_id, job_conf)
-        }
+        # }
         
         if job
           job.ended_at = Time.new
