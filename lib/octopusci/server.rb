@@ -19,6 +19,11 @@ module Octopusci
       super
     end
     
+    before do
+      puts "Calling verify_active_connectios"
+      ActiveRecord::Base.verify_active_connections!
+    end
+    
     helpers do
       def protected!
         unless authorized?
