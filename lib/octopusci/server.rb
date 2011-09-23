@@ -11,14 +11,6 @@ module Octopusci
     set :public, "#{dir}/server/public"
     set :static, true
     
-    def initialize
-      if Octopusci::CONFIG.has_key?('stages')
-        Octopusci::StageLocker.load(Octopusci::CONFIG['stages'])
-      end
-      
-      super
-    end
-    
     before do
       ActiveRecord::Base.verify_active_connections!
     end

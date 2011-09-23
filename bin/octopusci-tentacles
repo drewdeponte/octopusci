@@ -5,4 +5,12 @@ $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
 require 'rubygems'
 require 'octopusci'
 
+# The StageLocker.load() method is called here not only to set things into
+# valid initial state. But, also in the case that octopusci-tentacles was
+# killed it nukes the potentially screwed up state the redis data is in and
+# initializes it the proper state based on the config.
+if Octopusci::CONFIG.has_key?('stages')
+  Octopusci::StageLocker.load(Octopusci::CONFIG['stages'])
+end
+
 Octopusci::WorkerLauncher.launch

@@ -6,7 +6,10 @@ module Octopusci
 
     def self.perform(project_name, branch_name, job_id, job_conf)
       ActiveRecord::Base.verify_active_connections!
-      
+
+      # Note: There is no logic for handling stage coming back as nil because
+      # it should never happen because there are the same number of resque
+      # workers as there are stages at all times.
       if Octopusci::CONFIG.has_key?('stages')
         # Get the next available stage from redis which locks it by removing it
         # from the list of available
