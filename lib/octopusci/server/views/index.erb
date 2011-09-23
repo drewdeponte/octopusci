@@ -58,7 +58,7 @@
           <td style="text-align: right;">Duration:</td>
           <td>
             <% if j.ended_at && j.started_at %>
-              <%= j.ended_at - j.started_at %>
+              <%= (j.ended_at - j.started_at)/60 %> minutes
             <% else %>
               -
             <% end %>
