@@ -1,5 +1,22 @@
 #!/usr/bin/env ruby
 
+def display_help
+  puts "Usage: octopusci-tentacles <command>"
+  puts "  Acceptable Commands:"
+  puts "    start - Cleanup existing workers and start new worker processes in the background"
+  puts "     stop - Signals workers to exit when current job is finished"
+  puts "  restart - Synonym for the 'start' command, just here for convenience"
+  puts "     help - Display this help"
+  puts ""
+  puts "  Example: octopusci-tentacles start"
+  puts ""
+end
+
+if !["start", "stop", "restart", "help"].include?(ARGV[0])
+  display_help()
+  exit 1
+end
+
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
 
 require 'rubygems'
@@ -13,4 +30,15 @@ if Octopusci::CONFIG.has_key?('stages')
   Octopusci::StageLocker.load(Octopusci::CONFIG['stages'])
 end
 
-Octopusci::WorkerLauncher.launch
+case ARGV[0]
+  when "start"
+    Octopusci::WorkerLauncher.cleanup_existing_workers()
+    Octopusci::WorkerLauncher.launch()
+  when "restart"
+    Octopusci::WorkerLauncher.cleanup_existing_workers()
+    Octopusci::WorkerLauncher.launch()    
+  when "stop"
+    Octopusci::WorkerLauncher.cleanup_existing_workers()
+  when "help"
+    display_help()
+end
