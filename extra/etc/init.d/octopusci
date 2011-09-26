@@ -1,0 +1,51 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:             octopusci
+# Required-Start:       redis-server
+# Required-Stop:        redis-server
+# Default-Start:        2 3 4 5
+# Default-Stop:         0 1 6
+# Short-Description:    Octopusci
+### END INIT INFO
+
+NAME=octopusci
+DESC=octopusci
+OCTOPUSCI="/usr/local/rvm/gems/ruby-1.9.2-p290/bin/octopusci-tentacles"
+set -e
+
+# Make sure the binary and the config file are present before proceeding
+test -x $OCTOPUSCI || exit 0
+
+. /lib/lsb/init-functions
+
+RETVAL=0
+
+case "$1" in
+  start)
+    echo -n "Starting $DESC: "
+    $OCTOPUSCI start
+    RETVAL=$?
+    echo "$NAME."
+    ;;
+  stop)
+    echo -n "Stopping $DESC: "
+    $OCTOPUSCI stop
+    RETVAL=$?
+    echo "$NAME."
+    ;;
+  restart)
+    echo -n "Restarting $DESC: "
+    $OCTOPUSCI restart
+    RETVAL=$?
+    echo "$NAME."
+    ;;
+  *)
+    echo "Usage: $OCTOPUSCI {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+
+exit $RETVAL
+
