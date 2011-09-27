@@ -54,7 +54,7 @@ module Octopusci
         return 404
       end
       
-      if github_payload["ref"] =~ /refs\/heads\//
+      if (github_payload["ref"] =~ /refs\/heads\//) && (github_payload["deleted"] != true)
         branch_name = github_payload["ref"].gsub(/refs\/heads\//, '')
       
         # Queue the job appropriately
