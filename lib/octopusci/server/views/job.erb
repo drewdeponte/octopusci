@@ -1,0 +1,26 @@
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function() {
+    var t = setInterval(function() {
+      $('.job .status.pending,.job .status.running').each(function () {
+        var job_div = $(this).closest('.job');
+        
+        job_div.find('.job_summary').first().load(job_div.attr('data-summary-url'));
+        job_div.find('.output > pre > code').first().load(job_div.attr('data-output-url'));        
+        job_div.find('.silent_output > pre > code').first().load(job_div.attr('data-silent-output-url'));        
+      });
+    }, 5000);
+  });
+</script>
+<div id="job_<%= @job.id%>" class="job status_<%= @job.status %>" data-status-url="/jobs/<%= @job.id %>/status" data-output-url="/jobs/<%= @job.id %>/output" data-silent-output-url="/jobs/<%= @job.id %>/silent_output" data-summary-url="/jobs/<%= @job.id %>/ajax_summary">
+  <div class="job_summary">
+    <%= erb :job_summary, :locals => { :j => @job } %>
+  </div>
+  <div class="job_content">
+    Output:
+    <div class="output job_output" style="display: block;"><pre><code><%= @job.output %></code></pre></div>
+  </div>
+  <div class="job_content">
+    Log:
+    <div class="silent_output job_output" style="display: block;"><pre><code><%= @job.silent_output %></code></pre></div>
+  </div>
+</div>

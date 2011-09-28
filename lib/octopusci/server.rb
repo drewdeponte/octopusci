@@ -35,11 +35,17 @@ module Octopusci
       erb :index
     end
     
-    get '/:repo_name/:branch_name' do
+    get '/:repo_name/:branch_name/jobs' do
       protected!
       @page_logo = "#{params[:repo_name]} / #{params[:branch_name]}"
       @jobs = ::Job.where(:repo_name => params[:repo_name], :ref => "refs/heads/#{params[:branch_name]}").order('jobs.created_at DESC').limit(20)
       erb :index
+    end
+    
+    get '/jobs/:job_id' do
+      protected!
+      @job = ::Job.find(params[:job_id])
+      erb :job
     end
     
     get '/jobs/:job_id/output' do
@@ -47,6 +53,13 @@ module Octopusci
       @job = ::Job.find(params[:job_id])
       content_type('text/plain')
       return @job.output
+    end
+
+    get '/jobs/:job_id/silent_output' do
+      protected!
+      @job = ::Job.find(params[:job_id])
+      content_type('text/plain')
+      return @job.silent_output
     end
 
     get '/jobs/:job_id/status' do

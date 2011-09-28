@@ -1,6 +1,6 @@
 module Octopusci
   class Job
-    def self.run(job_record)
+    def self.run(job_rec)
       raise PureVirtualMethod, "The self.commit_run method needs to be defined on your Octopusci::Job."
     end
     
@@ -28,7 +28,10 @@ module Octopusci
           job.save
           
           begin
-            rv = self.run(job)
+            job.clone_code(job_conf)
+            job.checkout_branch(job_conf)
+            
+            rv = self.run(job, job_conf)
             if ::Job::STATUS.keys.include?(rv)
               job.status = 0
             else
