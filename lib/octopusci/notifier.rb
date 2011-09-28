@@ -10,7 +10,6 @@ module Octopusci
     def job_complete(recipient, cmd_output, cmd_status, github_payload, job_id)
       @job = ::Job.find(job_id)
       @job.output = cmd_output
-      @job.running = false
       if cmd_status == 0
         @job.successful = true
       else

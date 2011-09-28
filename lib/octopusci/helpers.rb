@@ -56,5 +56,9 @@ module Octopusci
     def self.encode(str)
       ::MultiJson.encode(str)
     end
+    
+    def self.workspace_path(stage)
+      return Octopusci::CONFIG['general']['workspace_base_path'] + "/#{stage}"
+    end
   end
 end

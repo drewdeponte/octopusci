@@ -1,0 +1,73 @@
+<div class="job_header">
+  <div class="job_title">
+    <span class="status <%= j.status %>"></span>
+    <div style="float: left;">
+      <a href="<%= j.payload['repository']['url'] %>"><%= j.repo_name %></a> / <a href="/<%= j.repo_name %>/<%= j.branch_name %>"><%= j.branch_name %></a>
+    </div>
+    <div style="clear: both;"></div>
+  </div>
+  <div class="created_on">
+    <%= j.created_at.strftime('%A, %B %d, %Y AT %I:%M%p') %>
+  </div>
+  <div style="clear: both;"></div>
+</div>
+<div class="job_content">
+  <table>
+    <tr>
+      <td style="text-align: right;">Job:</td>
+      <td style="width: 200px;"><%= j.id %></td>
+      <td style="text-align: right;">Before Commit:</td>
+      <td>
+        <% if !j.payload['created'] %>
+          <%= j.payload['before'] %>
+        <% else %>
+          No before commit, remote branch was created with this push.
+        <% end %>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align: right;">Finished:</td>
+      <td>
+        <% if j.ended_at %>
+          <%= j.ended_at.ago_in_words %>
+        <% else %>
+          -
+        <% end %>
+      </td>
+      <td style="text-align: right;">After Commit:</td>
+      <td>
+        <%= j.payload['after'] %>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align: right;">Duration:</td>
+      <td>
+        <% if j.ended_at && j.started_at %>
+          <%= ((j.ended_at - j.started_at)/60).to_i %> minutes
+        <% else %>
+          -
+        <% end %>
+      </td>
+      <td style="text-align: right;">Compare:</td>
+      <td><a href="<%= j.compare %>"><%= j.compare %></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: right;">Stage:</td>
+      <td><%= j.stage %></td>
+      <td style="text-align: right;">Pusher:</td>
+      <td>
+        <% if j.payload['pusher']['email'] %>
+          <a href="mailto:<%= j.payload['pusher']['name'] %>"><%= j.payload['pusher']['name'] %></a>
+        <% else %>
+          <%= j.payload['pusher']['name'] %>
+        <% end %>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align: right;">Output:</td>
+      <td>
+          <a class="show_hide_job_output" style="display: block; float: left;" href="#">toggle</a><div class="output_busy" style="float: left; margin-left: 5px; margin-top: 2px; <% if j.status == 'running' %>display: block;<% else %>display: none;<% end %>"><img src="/images/ajax-loader-1.gif" style="height: 12px;"/></div><div style="clear: both;"></div>
+      </td>
+    </tr>
+  </table>
+</div>

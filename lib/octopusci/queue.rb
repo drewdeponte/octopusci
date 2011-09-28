@@ -6,7 +6,7 @@ module Octopusci
       resque_opts = { "class" => job_klass, "args" => [proj_name, branch_name] }
       gh_pl_key = github_payload_key(proj_name, branch_name)
 
-      if lismember('commit', resque_opts)
+      if lismember('octopusci:commit', resque_opts)
         Resque.redis.set(gh_pl_key, Resque::encode(github_payload))
         # Get the most recent job for this project and update it with the data
         job = ::Job.where("jobs.repo_name = ? && jobs.ref = ?", proj_name, '/refs/heads/' + branch_name).order('jobs.created_at DESC').first
@@ -15,11 +15,11 @@ module Octopusci
         end
       else
         # Create a new job for this project with the appropriate data
-        job = ::Job.create(Octopusci::Helpers.gh_payload_to_job_attrs(github_payload).merge({ :running => false }))
+        job = ::Job.create(Octopusci::Helpers.gh_payload_to_job_attrs(github_payload).merge(:status => 'pending'))
         resque_opts["args"] << job.id
         resque_opts["args"] << job_conf
         Resque.redis.set(gh_pl_key, Resque::encode(github_payload))
-        Resque.push('commit', resque_opts)
+        Resque.push('octopusci:commit', resque_opts)
       end
     end
 

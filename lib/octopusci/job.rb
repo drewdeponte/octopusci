@@ -1,9 +1,9 @@
 module Octopusci
   class Job
-    def self.run(github_payload, stage, job_id, job_conf)
+    def self.run(job_record)
       raise PureVirtualMethod, "The self.commit_run method needs to be defined on your Octopusci::Job."
     end
-
+    
     def self.perform(project_name, branch_name, job_id, job_conf)
       ActiveRecord::Base.verify_active_connections!
 
@@ -23,19 +23,33 @@ module Octopusci
         job = ::Job.where("jobs.repo_name = ? && jobs.ref = ?", github_payload['repository']['name'], github_payload['ref']).order('jobs.created_at DESC').first
         if job
           job.started_at = Time.new
-          job.running = true
+          job.stage = stage
+          job.status = 'running'
           job.save
-        end
-        
-        # Run the commit run and report about status and output
-        # Bundler.with_clean_env {
-          self.run(github_payload, stage, job_id, job_conf)
-        # }
-        
-        if job
-          job.ended_at = Time.new
-          job.running = false
-          job.save
+          
+          begin
+            rv = self.run(job)
+            if ::Job::STATUS.keys.include?(rv)
+              job.status = 0
+            else
+              if rv == 0
+                job.status = 'successful'
+              else
+                job.status = 'failed'
+              end
+            end
+          rescue => e
+            File.open(job.abs_output_file_path, 'a') { |f|
+              f << "\n\nException: #{e.message}\n"
+              f << "-"*30
+              f << "\n"
+              f << e.backtrace.join("\n")
+            }
+            job.status = 'error'
+          ensure
+            job.ended_at = Time.new
+            job.save
+          end
         end
       ensure
         if Octopusci::CONFIG.has_key?('stages')

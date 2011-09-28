@@ -1,97 +1,32 @@
-<% @jobs.each do |j| %>
-  <div class="job">
-    <div class="job_header">
-      <div class="job_title">
-        <%
-          if j.running
-            status_class = 'running'
-          else
-            if j.successful.nil?
-              status_class = 'pending'
-            elsif j.successful == true
-              status_class = 'success'
-            else
-              status_class = 'failure'
-            end
-          end
-        %>
-        <span class="status <%= status_class %>"></span>
-        <div style="float: left;">
-          <a href="<%= j.payload['repository']['url'] %>"><%= j.repo_name %></a> / <a href="/<%= j.repo_name %>/<%= j.payload['ref'].gsub('refs/heads/', '') %>"><%= j.branch_name %></a>
-        </div>
-        <div style="clear: both;"></div>
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function() {
+    $('#jobs').delegate("a.show_hide_job_output", 'click', function() {
+      $('.job_output').not(this).hide();      
+      var job_cont = $(this).closest('.job_summary').next('.job_content')
+      var job_out = job_cont.find('.job_output').first();
+      job_out.toggle();
+      return false;      
+    });
+    
+    var t = setInterval(function() {
+      $('.job .status.pending,.job .status.running').each(function () {
+        var job_div = $(this).closest('.job');
+        
+        job_div.find('.job_summary').first().load(job_div.attr('data-summary-url'));
+        job_div.find('.job_output > pre > code').first().load(job_div.attr('data-output-url'));        
+      });
+    }, 5000);
+  });
+</script>
+<div id="jobs">
+  <% @jobs.each do |j| %>
+    <div id="job_<%= j.id%>" class="job status_<%= j.status %>" data-status-url="/jobs/<%= j.id %>/status" data-output-url="/jobs/<%= j.id %>/output" data-summary-url="/jobs/<%= j.id %>/ajax_summary">
+      <div class="job_summary">
+        <%= erb :job_summary, :locals => { :j => j } %>
       </div>
-      <div class="created_on">
-        <%= j.created_at.strftime('%A, %B %d, %Y AT %I:%M%p') %>
-      </div>
-      <div style="clear: both;"></div>
-    </div>
-    <div class="job_content">
-      <table>
-        <tr>
-          <td style="text-align: right;">Job:</td>
-          <td style="width: 200px;"><%= j.id %></td>
-          <td style="text-align: right;">Before Commit:</td>
-          <td>
-            <% if !j.payload['created'] %>
-              <%= j.payload['before'] %>
-            <% else %>
-              No before commit, remote branch was created with this push.
-            <% end %>
-          </td>
-        </tr>
-        <tr>
-          <td style="text-align: right;">Finished:</td>
-          <td>
-            <% if j.ended_at %>
-              <%= j.ended_at.ago_in_words %>
-            <% else %>
-              -
-            <% end %>
-          </td>
-          <td style="text-align: right;">After Commit:</td>
-          <td>
-            <%= j.payload['after'] %>
-          </td>
-        </tr>
-        <tr>
-          <td style="text-align: right;">Duration:</td>
-          <td>
-            <% if j.ended_at && j.started_at %>
-              <%= ((j.ended_at - j.started_at)/60).to_i %> minutes
-            <% else %>
-              -
-            <% end %>
-          </td>
-          <td style="text-align: right;">Compare:</td>
-          <td><a href="<%= j.compare %>"><%= j.compare %></a></td>
-        </tr>
-        <tr>
-          <td style="text-align: right;">Output:</td>
-          <td>
-            <% if j.running %>
-              Running...
-            <% elsif !j.running && j.successful.nil? %>
-              Pending...
-            <% else %>
-              <a class="show_hide_job_output" href="#">show</a>
-            <% end %>
-          </td>
-          <td style="text-align: right;">Pusher:</td>
-          <td>
-            <% if j.payload['pusher']['email'] %>
-              <a href="mailto:<%= j.payload['pusher']['name'] %>"><%= j.payload['pusher']['name'] %></a>
-            <% else %>
-              <%= j.payload['pusher']['name'] %>
-            <% end %>
-          </td>
-        </tr>
-      </table>
-      <div class="job_output">
-        <pre>
-          <code><%= j.output %></code>
-        </pre>
+      <div class="job_content">
+        <div class="job_output hidden"><pre><code><%= j.output %></code></pre></div>
       </div>
     </div>
-  </div>
-<% end %>
+  <% end %>
+</div>

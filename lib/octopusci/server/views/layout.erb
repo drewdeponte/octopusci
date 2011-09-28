@@ -94,13 +94,10 @@
         line-height: 1.2em;
         display: none;
       }
-      
+            
       .status {
         overflow: visible;
-/*        position: absolute;
-        top: -5px;
-        left: 0;
-*/      background: url("../images/status2.png");
+        background: url("../images/status2.png");
         float: left;
         width: 26px;
         height: 26px;
@@ -108,11 +105,11 @@
         margin: 0 0 0 0;
       }
       
-      .success {
+      .successful {
         background-position: 0px 0px;
       }
       
-      .failure {
+      .failed {
         background-position: 0px -26px;
       }
       
@@ -123,30 +120,11 @@
       .pending {
         background-position: 0px -74px;
       }
+
+      .error {
+        background-position: 0px -132px;
+      }
     </style>
-    <script type="text/javascript" charset="utf-8">
-      $(document).ready(function () {
-        // setInterval(function() {
-        //   window.location.reload();
-        // }, 10000 );
-        
-        $("a.show_hide_job_output").click(function() {
-          // $("a.show_hide_job_output ~ div.job_output").hide();
-          // $("a.show_hide_job_output").text('show');
-          $('a.show_hide_job_output').not(this).html('show');
-          $('.job_output').not(this).hide();
-          
-          if ($(this).html() == 'show') {
-            $(this).html('hide');
-            $(this).closest('.job_content').find('.job_output').show();
-          } else {
-            $(this).html('show');
-            $(this).closest('.job_content').find('.job_output').hide();
-          }
-          return false;
-        });
-      });
-    </script>
   </head>
   <body>
     <div id="header">
@@ -163,8 +141,8 @@
       <div style="font-size: 14px; line-height: 1.2em; margin-left: 20px;">
         <span class="status pending"></span><div style="float: left; margin-top: 6px;">Pending...</div>
         <span class="status running"></span><div style="float: left; margin-top: 6px;">Running...</div>
-        <span class="status success"></span><div style="float: left; margin-top: 6px;">Successful</div>
-        <span class="status failure"></span><div style="float: left; margin-top: 6px;">Failed</div>
+        <span class="status successful"></span><div style="float: left; margin-top: 6px;">Successful</div>
+        <span class="status failed"></span><div style="float: left; margin-top: 6px;">Failed</div>
         <div style="clear: both;"></div>
       </div>
       <%= yield %>      

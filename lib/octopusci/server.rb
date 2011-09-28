@@ -42,6 +42,26 @@ module Octopusci
       erb :index
     end
     
+    get '/jobs/:job_id/output' do
+      protected!
+      @job = ::Job.find(params[:job_id])
+      content_type('text/plain')
+      return @job.output
+    end
+
+    get '/jobs/:job_id/status' do
+      protected!
+      @job = ::Job.find(params[:job_id])
+      content_type('text/plain')
+      return @job.status
+    end
+    
+    get '/jobs/:job_id/ajax_summary' do
+      protected!
+      @job = ::Job.find(params[:job_id])
+      erb :job_summary, :layout => false, :locals => { :j => @job }
+    end
+    
     post '/github-build' do
       if params['payload'].nil?
         raise "No payload paramater found, it is a required parameter."
