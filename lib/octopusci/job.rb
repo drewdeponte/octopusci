@@ -31,7 +31,7 @@ module Octopusci
             job.clone_code(job_conf)
             job.checkout_branch(job_conf)
             
-            rv = self.run(job, job_conf)
+            rv = self.run(job)
             if ::Job::STATUS.keys.include?(rv)
               job.status = 0
             else
@@ -52,6 +52,8 @@ module Octopusci
           ensure
             job.ended_at = Time.new
             job.save
+            
+            Octopusci::Notifier.job_complete(job, job_conf, job.successful?)
           end
         end
       ensure

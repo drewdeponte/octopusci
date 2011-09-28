@@ -7,29 +7,28 @@ ActionMailer::Base.view_paths = File.dirname(__FILE__) + '/../'
 
 module Octopusci
   class Notifier < ActionMailer::Base    
-    def job_complete(recipient, cmd_output, cmd_status, github_payload, job_id)
-      @job = ::Job.find(job_id)
-      @job.output = cmd_output
-      if cmd_status == 0
-        @job.successful = true
+    def job_complete(job_rec, job_conf, success=false)
+      @job = job_rec
+      if success
+        @status_str = 'success'
       else
-        @job.successful = false
+        @status_str = 'failed'
       end
-      @job.save
       
-      if recipient
-        @cmd_output = cmd_output
-        @cmd_status = cmd_status
-        @github_payload = github_payload
-        if @cmd_status == 0
-          @status_str = 'success'
+      recip_email = nil
+      if job_rec.branch_name == 'master'
+        recip_email = job_conf['default_email']
+      else
+        if job_rec.github_payload['pusher']['email']
+          recip_email = job_rec.github_payload['pusher']['email']
         else
-          @status_str = 'failed'
+          recip_email = job_conf['default_email']
         end
-        mail(:to => recipient, :subject => "Octopusci Build (#{@status_str}) - #{@job.repo_name} / #{@job.ref.gsub(/refs\/heads\//, '')}") do |format|
-          format.text
-          format.html
-        end
+      end
+      
+      mail(:to => recip_email, :subject => "Octopusci Build (#{@status_str}) - #{@job.repo_name} / #{@job.branch_name}") do |format|
+        format.text
+        format.html
       end
     end
   end

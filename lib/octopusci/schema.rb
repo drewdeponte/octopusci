@@ -21,6 +21,18 @@ class Job < ActiveRecord::Base
     return STATUS[self.status]
   end
   
+  def successful?
+    return self.status == 'successful'
+  end
+  
+  def failed?
+    return self.status == 'failed'
+  end
+  
+  def finished?
+    return ['successful', 'failed', 'error'].include?(self.status)
+  end 
+  
   def output
     if File.exists?(self.abs_output_file_path)
       return File.open(self.abs_output_file_path, 'r').read()
