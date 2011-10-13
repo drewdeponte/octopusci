@@ -19,8 +19,8 @@ module Octopusci
       if job_rec.branch_name == 'master'
         recip_email = job_conf['default_email']
       else
-        if job_rec.github_payload['pusher']['email']
-          recip_email = job_rec.github_payload['pusher']['email']
+        if job_rec.payload['pusher']['email']
+          recip_email = job_rec.payload['pusher']['email']
         else
           recip_email = job_conf['default_email']
         end
