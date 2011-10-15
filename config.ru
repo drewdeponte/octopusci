@@ -4,7 +4,7 @@ require 'octopusci/server'
 
 # Set the AUTH env variable to your basic auth password to protect Resque.
 Resque::Server.use Rack::Auth::Basic do |username, password|
-  (username == Octopusci::CONFIG['http_basic']['username']) && (password == Octopusci::CONFIG['http_basic']['password'])
+  (username == Octopusci::Config['http_basic']['username']) && (password == Octopusci::Config['http_basic']['password'])
 end
 
 run Rack::URLMap.new("/" => Octopusci::Server.new, "/resque" => Resque::Server.new)

@@ -27,7 +27,7 @@ module Octopusci
 
       worker_pids = []
       
-      Octopusci::CONFIG['stages'].size.times do
+      Octopusci::Config['stages'].size.times do
         cur_pid = Process.fork do
           queues = ['octopusci:commit']
           worker = Resque::Worker.new(*queues)

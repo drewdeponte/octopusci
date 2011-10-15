@@ -50,7 +50,7 @@ class Job < ActiveRecord::Base
   end
   
   def workspace_path
-    return "#{Octopusci::CONFIG['general']['workspace_base_path']}/#{self.stage}"
+    return "#{Octopusci::Config['general']['workspace_base_path']}/#{self.stage}"
   end
   
   # Relative path of the output file to the workspace base path.
@@ -59,7 +59,7 @@ class Job < ActiveRecord::Base
   end
   
   def abs_output_file_path
-    return "#{Octopusci::CONFIG['general']['workspace_base_path']}#{self.rel_output_file_path}"
+    return "#{Octopusci::Config['general']['workspace_base_path']}#{self.rel_output_file_path}"
   end
   
   def abs_silent_output_file_path
@@ -71,7 +71,7 @@ class Job < ActiveRecord::Base
   end
   
   def abs_output_path
-    return "#{Octopusci::CONFIG['general']['workspace_base_path']}/jobs/#{self.id}"
+    return "#{Octopusci::Config['general']['workspace_base_path']}/jobs/#{self.id}"
   end
 
   def code_cloned?

@@ -41,7 +41,7 @@ module Octopusci
     # this method returns nil. Otherwise, this project returns a hash of the
     # project info that it found in the config.
     def self.get_project_info(project_name, project_owner)
-      Octopusci::CONFIG["projects"].each do |proj|
+      Octopusci::Config["projects"].each do |proj|
         if (proj['name'] == project_name) && (proj['owner'] == project_owner)
           return proj
         end
@@ -58,7 +58,7 @@ module Octopusci
     end
     
     def self.workspace_path(stage)
-      return Octopusci::CONFIG['general']['workspace_base_path'] + "/#{stage}"
+      return Octopusci::Config['general']['workspace_base_path'] + "/#{stage}"
     end
   end
 end

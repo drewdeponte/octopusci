@@ -24,7 +24,7 @@ module Octopusci
     end
     
     def self.stages
-      Octopusci::CONFIG['stages']
+      Octopusci::Config['stages']
     end
     
     def self.pool

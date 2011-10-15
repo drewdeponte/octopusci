@@ -10,7 +10,7 @@ module Octopusci
       # Note: There is no logic for handling stage coming back as nil because
       # it should never happen because there are the same number of resque
       # workers as there are stages at all times.
-      if Octopusci::CONFIG.has_key?('stages')
+      if Octopusci::Config.has_key?('stages')
         # Get the next available stage from redis which locks it by removing it
         # from the list of available
         stage = Octopusci::StageLocker.pop
@@ -57,7 +57,7 @@ module Octopusci
           end
         end
       ensure
-        if Octopusci::CONFIG.has_key?('stages')
+        if Octopusci::Config.has_key?('stages')
           # Unlock the stage by adding it back to the list of available stages
           Octopusci::StageLocker.push(stage)
         end

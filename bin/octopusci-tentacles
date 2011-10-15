@@ -26,8 +26,8 @@ require 'octopusci'
 # valid initial state. But, also in the case that octopusci-tentacles was
 # killed it nukes the potentially screwed up state the redis data is in and
 # initializes it the proper state based on the config.
-if Octopusci::CONFIG.has_key?('stages')
-  Octopusci::StageLocker.load(Octopusci::CONFIG['stages'])
+if Octopusci::Config.has_key?('stages')
+  Octopusci::StageLocker.load(Octopusci::Config['stages'])
 end
 
 case ARGV[0]

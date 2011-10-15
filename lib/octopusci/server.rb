@@ -8,7 +8,7 @@ module Octopusci
     dir = File.dirname(File.expand_path(__FILE__))
     
     set :views, "#{dir}/server/views"
-    set :public, "#{dir}/server/public"
+    set :public_folder, "#{dir}/server/public"
     set :static, true
     
     before do
@@ -25,7 +25,7 @@ module Octopusci
 
       def authorized?
         @auth ||=  Rack::Auth::Basic::Request.new(request.env)        
-        @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [ Octopusci::CONFIG['http_basic']['username'], Octopusci::CONFIG['http_basic']['password'] ]
+        @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [ Octopusci::Config['http_basic']['username'], Octopusci::Config['http_basic']['password'] ]
       end
     end
     
