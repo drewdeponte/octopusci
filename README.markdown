@@ -2,8 +2,8 @@ Octopusci
 =========
 
 Octopusci is fresh new take on a continuous integration server centralized
-around the concept of getting the same great CI benefits when using multi-branch
-workflow.
+around the concept of getting the same great CI benefits when using a
+multi-branch workflow.
 
 How's it Different?
 -------------------
@@ -48,66 +48,85 @@ first looks to see if there is already a pending job for the branch that was pus
 there is, it simply updates the jobs associated branch data. If there is not already a
 pending job then it queues a new job for that branch.
 
-Quickstart
-----------
+### GitHub Integration ###
 
-I install guides
+Octopusci was designed specifically to integrate cleanly with GitHub's push notifications
+system. At some point in the future Octopusci may support more than just GitHub but for
+the time being GitHub is our primary focus.
+
+Install Guide
+-------------
+
+### Install Dependencies ###
+
+Octopusci has two dependencies at the moment [Redis](http://redis.io/) and a Database
+such as [MySQL](http://mysql.com) or [Postgres](http://www.postgresql.org).
+[Redis](http://redis.io/) needs to be installed and configured startup appropriately
+on the box you plan to run Octopusci on.
+
+On Debian/Ubuntu machines this is to my knowledge as easy as `apt-get install redis-server`.
+
+On Mac OS X machines this can easly be installed via [brew](http://mxcl.github.com/homebrew/)
+using `brew install redis`. Follow the on screen instructions to configure it to auto
+startup when you boot up as well as simply how to run the server manually.
+
+Next you need to install a Database. I also recommend you create a user account in your Database
+specifically for Octopusci. I will not cover the installation of [MySQL](http://mysql.com),
+[Postgres](http://www.postgresql.org) or the create of a user within either of those Databases
+as there exists plenty of documentation on the web that already covers this.
+
+You also need to create a database specifically for Octopusci to use.
+
+### Gem & Init Skel ###
 
     $ gem install octopusci
     $ sudo octopusci-skel
 
+The `octopusci-skel` command will make sure the `/etc/octopusci` path exists and its
+underlying structure. It will also create a default example `/etc/ocotpusci/config.yml`
+if one is not found.
 
-The purpose of this project is provide a simple CI server that will work with
-GitHub Post-Receive hook. It is also specifically designed to handle multiple
-build/job queues for each branch.
+### Update Example Config ###
 
-This would basically allow you to every time code is pushed to the central
-repository enqueue a build/job for the specific branch. That way if you
-have topic branches that are being pushed to the central repository along
-side the mainline branch they will get queue properly as well.
+Now that the `/etc/octopusci/config.yml` example config has been created for you it is
+time to go check it out and update some of the values in it.
 
-My idea for implementation at this point is that if I can detect the branch
-from the GitHub Post-Receive hook then I can identify branch. If I can
-identify branch then I can maintain individual queues for each branch.
+TODO: Fill this out with details on the config, required fields, optional fields, etc.
 
-Then the execution would look at config values for predefined branches and
-priorities for order of running them so that the mainline branch running its
-jobs could take precedence over non specified topic branches.
+### Migrate the Database ###
 
-Install redis and get it starting up appropriately
+    octopusci-db-migrate
 
-gem install octopusci
-sudo octopusci-skel
-octopusci-db-migrate
+### Jobs ###
 
-Then update the /etc/octopusci/config.yml appropriately.
-
-Add any jobs you would like to the /etc/octopusci/jobs directory as rb files
-and octopusci will load them appropriately when started.
+Add any jobs you would like to the `/etc/octopusci/jobs` directory as rb files
+and Octopusci will load them appropriately when started.
 
 Figure out what directory the gem is installed in by running the following
 command and stripping off the lib/octopusci.rb at the end.
 
-gem which octopusci
+    gem which octopusci
 
 Once you have the path we can use that path to setup Passenger with Apache
 or something else like nginx as well as setup the database. Note: You will
 need to setup a database user and a database for octopusci. The settings for
 these should be stored in /etc/octopusci/config.yml.
 
-rake -f /path/of/octpusci/we/got/before/Rakefile db:migrate
+    rake -f /path/of/octpusci/we/got/before/Rakefile db:migrate
 
-<VirtualHost *:80>
-  ServerName octopusci.example.com
-  PassengerAppRoot /path/of/octpusci/we/got/before
-  DocumentRoot /path/of/octpusci/we/got/before/lib/octopusci/server/public
-  <Directory /path/of/octpusci/we/got/before/lib/octopusci/server/public>
-    Order allow,deny
-    Allow from all
-    AllowOverride all
-    Options -MultiViews
-  </Directory>
-</VirtualHost>
+Apache virtual host example
+
+    <VirtualHost *:80>
+      ServerName octopusci.example.com
+      PassengerAppRoot /path/of/octpusci/we/got/before
+      DocumentRoot /path/of/octpusci/we/got/before/lib/octopusci/server/public
+      <Directory /path/of/octpusci/we/got/before/lib/octopusci/server/public>
+        Order allow,deny
+        Allow from all
+        AllowOverride all
+        Options -MultiViews
+      </Directory>
+    </VirtualHost>
 
 The above will give us the web Octopusci web interface.
 
