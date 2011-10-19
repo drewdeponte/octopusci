@@ -22,7 +22,7 @@ describe "Octopusci::Server" do
     it "should enqueue a job if the request is for a managed project" do
       test_proj_info = { 'name' => 'temp_pusc_test', 'owner' => 'cyphactor', 'job_klass' => 'MyTestJob' }
       Octopusci::Helpers.stub(:get_project_info).and_return(test_proj_info)
-      Octopusci::Queue.should_receive(:enqueue).with(test_proj_info['job_klass'], "temp_pusci_test", "master", Octopusci::Helpers.decode(@github_test_payload))
+      Octopusci::Queue.should_receive(:enqueue).with(test_proj_info['job_klass'], "temp_pusci_test", "master", Octopusci::Helpers.decode(@github_test_payload), test_proj_info)
       post '/github-build', :payload => @github_test_payload
       last_response.status.should == 200
     end
