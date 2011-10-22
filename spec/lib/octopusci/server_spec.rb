@@ -10,6 +10,7 @@ describe "Octopusci::Server" do
     it "should parse the github payload using JSON" do
       parsed_github_payload = Octopusci::Helpers.decode(@github_test_payload)
       Octopusci::Helpers.should_receive(:decode).with(@github_test_payload).and_return(parsed_github_payload)
+      Octopusci::Queue.stub(:enqueue) # stub this out so test doesn't actually enqueue a job
       post '/github-build', :payload => @github_test_payload
     end
     

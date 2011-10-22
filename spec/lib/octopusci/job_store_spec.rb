@@ -14,7 +14,7 @@ describe Octopusci::JobStore do
       r = mock('redis').as_null_object
       Octopusci::JobStore.stub(:redis).and_return(r)
       r.stub(:incr).and_return(1)
-      r.should_receive(:set).with("octopusci:jobs:1", "stub_job")
+      Octopusci::JobStore.should_receive(:set).with(1, "stub_job")
       Octopusci::JobStore.prepend("stub_job")
     end
 
@@ -35,10 +35,10 @@ describe Octopusci::JobStore do
   end
 
   describe "#set" do
-    it "should store the passed job record at the proper key" do
+    it "should store the passed job record serialized at the proper key" do
       r = mock('redis')
       Octopusci::JobStore.stub(:redis).and_return(r)
-      r.should_receive(:set).with("octopusci:jobs:1", "stub_job")
+      r.should_receive(:set).with("octopusci:jobs:1", YAML.dump("stub_job"))
       Octopusci::JobStore.set(1, "stub_job")
     end
   end
