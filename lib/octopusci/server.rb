@@ -3,6 +3,8 @@ require 'multi_json'
 require 'erb'
 require 'octopusci'
 
+require 'pp'
+
 module Octopusci
   class Server < Sinatra::Base
     dir = File.dirname(File.expand_path(__FILE__))
@@ -10,7 +12,8 @@ module Octopusci
     set :views, "#{dir}/server/views"
     set :public_folder, "#{dir}/server/public"
     set :static, true
-    
+    enable :lock
+
     before do
       ActiveRecord::Base.verify_active_connections!
     end
@@ -55,7 +58,7 @@ module Octopusci
       return @job.output
     end
 
-    get '/jobs/:job_id/silent_output' do
+    get '/jobs/:job_id/silent_output' do      
       protected!
       @job = ::Job.find(params[:job_id])
       content_type('text/plain')

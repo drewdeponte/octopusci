@@ -6,7 +6,7 @@ require 'action_mailer'
 ActionMailer::Base.view_paths = File.dirname(__FILE__) + '/../'
 
 module Octopusci
-  class Notifier < ActionMailer::Base    
+  class Notifier < ActionMailer::Base
     def job_complete(job_rec, job_conf, success=false)
       @job = job_rec
       if success

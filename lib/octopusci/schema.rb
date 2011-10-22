@@ -29,6 +29,13 @@ class Job < ActiveRecord::Base
     return self.status == 'failed'
   end
   
+  def record_start!(stage)
+    self.started_at = Time.new
+    self.stage = stage
+    self.status = 'running'
+    self.save!
+  end
+
   def finished?
     return ['successful', 'failed', 'error'].include?(self.status)
   end 
@@ -101,34 +108,50 @@ class Job < ActiveRecord::Base
   # output file. It also returns the exit status of the command that was
   # run as the integer exit status of the commands on the command line.
   def run_command(cmd_str, silently=false)
+    write_output(silently) do |out_f|
+      out_f << "\n\nRunning: #{cmd_str}\n"
+      out_f << "-"*30
+      out_f << "\n"
+      out_f.flush
+      
+      f = IO.popen(cmd_str)
+      while(cur_line = f.gets) do
+        out_f << cur_line
+        out_f.flush
+      end
+
+      f.close
+    end
+
+    return $?.exitstatus.to_i
+  end
+
+  def write_output(silently=false, msg="")
     # Make sure that the directory structure is in place for the job output.
     if !File.directory?(self.abs_output_path)
       FileUtils.mkdir_p(self.abs_output_path)
     end
     
-    out_f = nil
-    
     # Run the command and output the output to the job file
-    if silently
-      out_f = File.open(self.abs_silent_output_file_path, 'a')
+    out_f = if silently
+      File.open(self.abs_silent_output_file_path, 'a')
     else
-      out_f = File.open(self.abs_output_file_path, 'a')
+      File.open(self.abs_output_file_path, 'a')
     end
-    out_f << "\n\nRunning: #{cmd_str}\n"
-    out_f << "-"*30
-    out_f << "\n"
-    out_f.flush
-    
-    f = IO.popen(cmd_str)
-    while(cur_line = f.gets) do
-      out_f << cur_line
-      out_f.flush
-    end
-    
+
+    yield(out_f) if block_given?
+    out_f << msg unless msg.nil? || msg.empty?
+
     out_f.close
-    f.close
-    
-    return $?.exitstatus.to_i
+  end
+
+  def write_exception(e)
+    self.write_output do |f|
+      f << "\n\nException: #{e.message}\n"
+      f << "-"*30
+      f << "\n"
+      f << e.backtrace.join("\n")
+    end
   end
   
   private
