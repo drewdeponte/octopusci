@@ -54,27 +54,27 @@ module Octopusci
       protected!
       @job = Octopusci::JobStore.get(params[:job_id])
       content_type('text/plain')
-      return @job.output
+      return Octopusci::IO.new(@job).read_all_out
     end
 
     # TODO: Port teh @job.silent_output to use the new Octopusci::IO functionality to read the job silent output
     get '/jobs/:job_id/silent_output' do
       protected!
-      @job = ::Job.find(params[:job_id])
+      @job = Octopusci::JobStore.get(params[:job_id])
       content_type('text/plain')
-      return @job.silent_output
+      return Octopusci::IO.new(@job).read_all_log
     end
 
     get '/jobs/:job_id/status' do
       protected!
-      @job = ::Job.find(params[:job_id])
+      @job = Octopusci::JobStore.get(params[:job_id])
       content_type('text/plain')
       return @job.status
     end
     
     get '/jobs/:job_id/ajax_summary' do
       protected!
-      @job = ::Job.find(params[:job_id])
+      @job = Octopusci::JobStore.get(params[:job_id])
       erb :job_summary, :layout => false, :locals => { :j => @job }
     end
     
