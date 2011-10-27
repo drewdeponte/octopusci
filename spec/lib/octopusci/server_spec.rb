@@ -38,73 +38,75 @@ describe "Octopusci::Server" do
     end
   end
 
-  describe "GET /jobs/:job_id" do
-    it "should get the job specified by :job_id" do
-      job_id = "234"
-      job = stub('job', :id => job_id, :status => 'pending',
-        :payload => { 'repository' => { 'url' => 'http://somewhere.com' }, 'pusher' => { 'email' => 'bob@example.com' } },
-        :repo_name => 'bar', :branch_name => 'foo', :created_at => Time.now, :started_at => Time.now,
-        :ended_at => Time.now + 1000, :compare => 'http://compareurl.com', :stage => 'test_a')
-      Octopusci::Server.any_instance.stub(:authorized?).and_return(true)
-      Octopusci::JobStore.should_receive(:get).with(job_id).and_return(job)
-      get "/jobs/#{job_id}"
-      last_response.status.should == 200
-    end
-  end
+  describe "job specific" do
 
-  describe "GET /jobs/:job_id/output" do
-    it "should get the job specified by :job_id" do
-      job_id = "235"
-      job = stub('job', :id => job_id, :status => 'pending',
-        :payload => { 'repository' => { 'url' => 'http://somewhere.com' }, 'pusher' => { 'email' => 'bob@example.com' } },
-        :repo_name => 'bar', :branch_name => 'foo', :created_at => Time.now, :started_at => Time.now,
-        :ended_at => Time.now + 1000, :compare => 'http://compareurl.com', :stage => 'test_a')
-      Octopusci::Server.any_instance.stub(:authorized?).and_return(true)
-      Octopusci::JobStore.should_receive(:get).with(job_id).and_return(job)
-      get "/jobs/#{job_id}/output"
-      last_response.status.should == 200
+    before(:each) do
+      @job_id = "234"
+      @job = stub('job', :id => @job_id, :status => 'pending',
+          :payload => { 'repository' => { 'url' => 'http://somewhere.com' }, 'pusher' => { 'email' => 'bob@example.com' } },
+          :repo_name => 'bar', :branch_name => 'foo', :created_at => Time.now, :started_at => Time.now,
+          :ended_at => Time.now + 1000, :compare => 'http://compareurl.com', :stage => 'test_a')
     end
-  end
 
-  describe "GET /jobs/:job_id/silent_output" do
-    it "should get the job specified by :job_id" do
-      job_id = "236"
-      job = stub('job', :id => job_id, :status => 'pending',
-        :payload => { 'repository' => { 'url' => 'http://somewhere.com' }, 'pusher' => { 'email' => 'bob@example.com' } },
-        :repo_name => 'bar', :branch_name => 'foo', :created_at => Time.now, :started_at => Time.now,
-        :ended_at => Time.now + 1000, :compare => 'http://compareurl.com', :stage => 'test_a')
-      Octopusci::Server.any_instance.stub(:authorized?).and_return(true)
-      Octopusci::JobStore.should_receive(:get).with(job_id).and_return(job)
-      get "/jobs/#{job_id}/silent_output"
-      last_response.status.should == 200
+    describe "GET /jobs/:job_id" do
+      it "should get the job specified by :job_id" do
+        Octopusci::Server.any_instance.stub(:authorized?).and_return(true)
+        Octopusci::JobStore.should_receive(:get).with(@job_id).and_return(@job)
+        get "/jobs/#{@job_id}"
+        last_response.status.should == 200
+      end
     end
-  end
 
-  describe "GET /jobs/:job_id/status" do
-    it "should get the job specified by :job_id" do
-      job_id = "237"
-      job = stub('job', :id => job_id, :status => 'pending',
-        :payload => { 'repository' => { 'url' => 'http://somewhere.com' }, 'pusher' => { 'email' => 'bob@example.com' } },
-        :repo_name => 'bar', :branch_name => 'foo', :created_at => Time.now, :started_at => Time.now,
-        :ended_at => Time.now + 1000, :compare => 'http://compareurl.com', :stage => 'test_a')
-      Octopusci::Server.any_instance.stub(:authorized?).and_return(true)
-      Octopusci::JobStore.should_receive(:get).with(job_id).and_return(job)
-      get "/jobs/#{job_id}/status"
-      last_response.status.should == 200
+    describe "GET /jobs/:job_id/output" do
+      it "should get the job specified by :job_id" do
+        Octopusci::Server.any_instance.stub(:authorized?).and_return(true)
+        Octopusci::JobStore.should_receive(:get).with(@job_id).and_return(@job)
+        get "/jobs/#{@job_id}/output"
+        last_response.status.should == 200
+      end
     end
-  end
 
-  describe "GET /jobs/:job_id/ajax_summary" do
-    it "should get the job specified by :job_id" do
-      job_id = "238"
-      job = stub('job', :id => job_id, :status => 'pending',
-        :payload => { 'repository' => { 'url' => 'http://somewhere.com' }, 'pusher' => { 'email' => 'bob@example.com' } },
-        :repo_name => 'bar', :branch_name => 'foo', :created_at => Time.now, :started_at => Time.now,
-        :ended_at => Time.now + 1000, :compare => 'http://compareurl.com', :stage => 'test_a')
-      Octopusci::Server.any_instance.stub(:authorized?).and_return(true)
-      Octopusci::JobStore.should_receive(:get).with(job_id).and_return(job)
-      get "/jobs/#{job_id}/ajax_summary"
-      last_response.status.should == 200
+    describe "GET /jobs/:job_id/silent_output" do
+      it "should get the job specified by :job_id" do
+        Octopusci::Server.any_instance.stub(:authorized?).and_return(true)
+        Octopusci::JobStore.should_receive(:get).with(@job_id).and_return(@job)
+        get "/jobs/#{@job_id}/silent_output"
+        last_response.status.should == 200
+      end
+
+      it "should return the log output for the job identified by :job_id" do
+        Octopusci::Server.any_instance.stub(:authorized?).and_return(true)
+        Octopusci::JobStore.stub(:get).with(@job_id).and_return(@job)
+        Octopusci::IO.any_instance.stub(:read_all_log).and_return("log output")
+        get "/jobs/#{@job_id}/silent_output"
+        last_response.body.should == "log output"
+      end
     end
+
+    describe "GET /jobs/:job_id/status" do
+      it "should get the job specified by :job_id" do
+        Octopusci::Server.any_instance.stub(:authorized?).and_return(true)
+        Octopusci::JobStore.should_receive(:get).with(@job_id).and_return(@job)
+        get "/jobs/#{@job_id}/status"
+        last_response.status.should == 200
+      end
+
+      it "should return the status of the current status of the job identified by :job_id" do
+        Octopusci::Server.any_instance.stub(:authorized?).and_return(true)
+        Octopusci::JobStore.stub(:get).with(@job_id).and_return(@job)
+        get "/jobs/#{@job_id}/status"
+        last_response.body.should == "pending"
+      end
+    end
+
+    describe "GET /jobs/:job_id/ajax_summary" do
+      it "should get the job specified by :job_id" do
+        Octopusci::Server.any_instance.stub(:authorized?).and_return(true)
+        Octopusci::JobStore.should_receive(:get).with(@job_id).and_return(@job)
+        get "/jobs/#{@job_id}/ajax_summary"
+        last_response.status.should == 200
+      end
+    end
+    
   end
 end
