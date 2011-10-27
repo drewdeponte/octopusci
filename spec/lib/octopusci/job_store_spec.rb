@@ -7,15 +7,15 @@ describe Octopusci::JobStore do
       r = mock('redis').as_null_object
       Octopusci::JobStore.stub(:redis).and_return(r)
       r.should_receive(:incr).with('octopusci:job_count')
-      Octopusci::JobStore.prepend("stub_job")
+      Octopusci::JobStore.prepend({ "stub_job" => "foo"})
     end
 
     it "should store the job record" do
       r = mock('redis').as_null_object
       Octopusci::JobStore.stub(:redis).and_return(r)
       r.stub(:incr).and_return(1)
-      Octopusci::JobStore.should_receive(:set).with(1, "stub_job")
-      Octopusci::JobStore.prepend("stub_job")
+      Octopusci::JobStore.should_receive(:set).with(1, { "stub_job" => "foo", :id => 1 })
+      Octopusci::JobStore.prepend({ "stub_job" => "foo"})
     end
 
     it "should prepend the job id to the job ids list" do
@@ -23,14 +23,14 @@ describe Octopusci::JobStore do
       Octopusci::JobStore.stub(:redis).and_return(r)
       r.stub(:incr).and_return(10)
       r.should_receive(:lpush).with("octopusci:jobs", 10)
-      Octopusci::JobStore.prepend("stub_job")
+      Octopusci::JobStore.prepend({ "stub_job" => "foo"})
     end
 
     it "should return the prepended jobs id" do
       r = mock('redis').as_null_object
       r.stub(:incr).and_return(1)
       Octopusci::JobStore.stub(:redis).and_return(r)
-      Octopusci::JobStore.prepend("stub_job").should == 1
+      Octopusci::JobStore.prepend({ "stub_job" => "foo"}).should == 1
     end
   end
 
@@ -38,8 +38,8 @@ describe Octopusci::JobStore do
     it "should store the passed job record serialized at the proper key" do
       r = mock('redis')
       Octopusci::JobStore.stub(:redis).and_return(r)
-      r.should_receive(:set).with("octopusci:jobs:1", YAML.dump("stub_job"))
-      Octopusci::JobStore.set(1, "stub_job")
+      r.should_receive(:set).with("octopusci:jobs:1", YAML.dump({ "stub_job" => "foo"}))
+      Octopusci::JobStore.set(1, { "stub_job" => "foo"})
     end
   end
 

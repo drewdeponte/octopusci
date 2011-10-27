@@ -28,4 +28,30 @@ describe "Octopusci::Server" do
       last_response.status.should == 200
     end
   end
+
+  describe "GET /" do
+    it "should get the 20 most recently queued jobs" do
+      # need to stub out the helpers some how
+      Octopusci::Server.any_instance.stub(:authorized?).and_return(true)
+      Octopusci::JobStore.should_receive(:list).with(0, 20)
+      get '/'
+      puts "foo"
+      last_response.status.should == 200
+    end
+  end
+
+  describe "GET /jobs/:job_id" do
+  end
+
+  describe "GET /jobs/:job_id/output" do
+  end
+
+  describe "GET /jobs/:job_id/silent_output" do
+  end
+
+  describe "GET /jobs/:job_id/status" do
+  end
+
+  describe "GET /jobs/:job_id/ajax_summary" do
+  end
 end

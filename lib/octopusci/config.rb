@@ -85,14 +85,6 @@ Octopusci::Config.after_load do
     raise "You have defined stages as an option but have no items in it."
   end
 
-  ActiveRecord::Base.establish_connection(
-    :adapter => Octopusci::Config['db']['adapter'],
-    :host => Octopusci::Config['db']['host'],
-    :database => Octopusci::Config['db']['database'],
-    :username => Octopusci::Config['db']['username'],
-    :password => Octopusci::Config['db']['password']
-  )
-
   Octopusci::Notifier.default :from => Octopusci::Config['smtp']['notification_from_email']
   Octopusci::Notifier.delivery_method = :smtp
   Octopusci::Notifier.smtp_settings = {

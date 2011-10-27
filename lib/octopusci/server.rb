@@ -12,11 +12,6 @@ module Octopusci
     set :views, "#{dir}/server/views"
     set :public_folder, "#{dir}/server/public"
     set :static, true
-    enable :lock
-
-    before do
-      ActiveRecord::Base.verify_active_connections!
-    end
     
     helpers do
       def protected!
@@ -34,31 +29,36 @@ module Octopusci
     
     get '/' do
       protected!
-      @jobs = ::Job.order('jobs.created_at DESC').limit(20)
+      @jobs = Octopusci::JobStore.list(0, 20)
       erb :index
     end
-    
-    get '/:repo_name/:branch_name/jobs' do
-      protected!
-      @page_logo = "#{params[:repo_name]} / #{params[:branch_name]}"
-      @jobs = ::Job.where(:repo_name => params[:repo_name], :ref => "refs/heads/#{params[:branch_name]}").order('jobs.created_at DESC').limit(20)
-      erb :index
-    end
+
+    # TODO: port this feature to use redis store
+    # I am commenting this feature out because it is a feature that I don't see as being crucial for the initial deployment and it will
+    # same some complexity with respect to the redis job store for now.
+    # get '/:repo_name/:branch_name/jobs' do
+    #   protected!
+    #   @page_logo = "#{params[:repo_name]} / #{params[:branch_name]}"
+    #   @jobs = ::Job.where(:repo_name => params[:repo_name], :ref => "refs/heads/#{params[:branch_name]}").order('jobs.created_at DESC').limit(20)
+    #   erb :index
+    # end
     
     get '/jobs/:job_id' do
       protected!
-      @job = ::Job.find(params[:job_id])
+      @job = Octopusci::JobStore.get(params[:job_id])
       erb :job
     end
     
+    # TODO: Port the @job.output to use the new Octopusci::IO functionality to read the job output
     get '/jobs/:job_id/output' do
       protected!
-      @job = ::Job.find(params[:job_id])
+      @job = Octopusci::JobStore.get(params[:job_id])
       content_type('text/plain')
       return @job.output
     end
 
-    get '/jobs/:job_id/silent_output' do      
+    # TODO: Port teh @job.silent_output to use the new Octopusci::IO functionality to read the job silent output
+    get '/jobs/:job_id/silent_output' do
       protected!
       @job = ::Job.find(params[:job_id])
       content_type('text/plain')
@@ -99,6 +99,6 @@ module Octopusci
         return 200
       end
     end
-        
+
   end
 end

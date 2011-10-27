@@ -2,7 +2,7 @@ module Octopusci
   class JobStore
     def self.prepend(job)
       job_id = redis.incr('octopusci:job_count')
-      self.set(job_id, job)
+      self.set(job_id, job.merge({ :id => job_id }))
       redis.lpush("octopusci:jobs", job_id)
       return job_id
     end
@@ -14,7 +14,7 @@ module Octopusci
     def self.get(job_id)
       job = redis.get("octopusci:jobs:#{job_id}")
       if job
-        return YAML.load(job)
+        return OpenStruct.new(YAML.load(job))
       end
       return nil
     end
