@@ -1,5 +1,4 @@
 require 'octopusci/notifier'
-require 'active_record'
 
 module Octopusci
   class ConfigStore

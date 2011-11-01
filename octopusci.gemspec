@@ -25,7 +25,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'json'
   s.add_dependency 'resque'
   s.add_dependency 'actionmailer'
-  s.add_dependency 'activerecord'
   s.add_dependency 'mysql'
   s.add_dependency 'multi_json'
   s.add_dependency 'time-ago-in-words'
