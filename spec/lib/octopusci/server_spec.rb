@@ -38,6 +38,15 @@ describe "Octopusci::Server" do
     end
   end
 
+  describe "GET /:repo_name/:branch_name/jobs" do
+    it "should get the 20 most recently queue jobs for the provided repo_name, branch_name combo" do
+      Octopusci::Server.any_instance.stub(:authorized?).and_return(true)
+      Octopusci::JobStore.should_receive(:list_repo_branch).with('foo-repo', 'bar-branch', 0, 20).and_return([])
+      get '/foo-repo/bar-branch/jobs'
+      last_response.status.should == 200
+    end
+  end
+
   describe "job specific" do
 
     before(:each) do

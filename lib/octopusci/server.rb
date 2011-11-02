@@ -33,15 +33,12 @@ module Octopusci
       erb :index
     end
 
-    # TODO: port this feature to use redis store
-    # I am commenting this feature out because it is a feature that I don't see as being crucial for the initial deployment and it will
-    # same some complexity with respect to the redis job store for now.
-    # get '/:repo_name/:branch_name/jobs' do
-    #   protected!
-    #   @page_logo = "#{params[:repo_name]} / #{params[:branch_name]}"
-    #   @jobs = ::Job.where(:repo_name => params[:repo_name], :ref => "refs/heads/#{params[:branch_name]}").order('jobs.created_at DESC').limit(20)
-    #   erb :index
-    # end
+    get '/:repo_name/:branch_name/jobs' do
+      protected!
+      @page_logo = "#{params[:repo_name]} / #{params[:branch_name]}"
+      @jobs = Octopusci::JobStore.list_repo_branch(params[:repo_name], params[:branch_name], 0, 20)
+      erb :index
+    end
     
     get '/jobs/:job_id' do
       protected!
@@ -49,7 +46,6 @@ module Octopusci
       erb :job
     end
     
-    # TODO: Port the @job.output to use the new Octopusci::IO functionality to read the job output
     get '/jobs/:job_id/output' do
       protected!
       @job = Octopusci::JobStore.get(params[:job_id])
@@ -57,7 +53,6 @@ module Octopusci
       return Octopusci::IO.new(@job).read_all_out
     end
 
-    # TODO: Port teh @job.silent_output to use the new Octopusci::IO functionality to read the job silent output
     get '/jobs/:job_id/silent_output' do
       protected!
       @job = Octopusci::JobStore.get(params[:job_id])
