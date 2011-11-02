@@ -39,8 +39,6 @@ module Octopusci
     end
     
     def self.perform(project_name, branch_name, job_id, job_conf)
-      ActiveRecord::Base.verify_active_connections!
-
       context_stack = []
 
       # Note: There is no logic for handling stage coming back as nil because
