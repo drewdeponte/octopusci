@@ -9,3 +9,11 @@ def app
 end
 
 include Rack::Test::Methods
+
+RSpec.configure do |config|
+  config.before(:each) do
+    # Here I mock the Resque redis method to prevent the tests from actually storing any data in redis
+  	@mock_redis = mock('redis')
+  	Resque.stub(:redis).and_return(@mock_redis)
+  end
+end

@@ -5,6 +5,8 @@ describe "Octopusci::Queueu" do
     it "should prepend the job to the job store if a matching job doesn't already exist" do
       proj_info = { :some => 'proj_info' }
       github_payload = { :some => 'github_payload' }
+      @mock_redis.stub(:set)
+      Resque.stub(:push)
       Octopusci::Helpers.stub(:gh_payload_to_job_attrs).and_return({})
       Octopusci::Queue.stub(:lismember).and_return(false)
       Octopusci::JobStore.should_receive(:prepend)
@@ -15,6 +17,8 @@ describe "Octopusci::Queueu" do
       r = mock('redis')
       proj_info = { :some => 'proj_info' }
       github_payload = { :some => 'github_payload' }
+      Resque.stub(:push)
+      Octopusci::JobStore.stub(:prepend)
       Octopusci::Queue.stub(:redis).and_return(r)
       Octopusci::Helpers.stub(:gh_payload_to_job_attrs).and_return({})
       Octopusci::Queue.stub(:lismember).and_return(false)
@@ -25,6 +29,8 @@ describe "Octopusci::Queueu" do
     it "should enque the job in the octopusci Resque queue if a matching job doesn't already exist" do
       proj_info = { :some => 'proj_info' }
       github_payload = { :some => 'github_payload' }
+      Octopusci::JobStore.stub(:prepend)
+      @mock_redis.stub(:set)
       Octopusci::Helpers.stub(:gh_payload_to_job_attrs).and_return({})
       Octopusci::Queue.stub(:lismember).and_return(false)
       Resque.should_receive(:push)
@@ -35,6 +41,7 @@ describe "Octopusci::Queueu" do
       proj_info = { :some => 'proj_info' }
       github_payload = { :some => 'github_payload' }
       r = mock('redis')
+      Octopusci::JobStore.stub(:list_repo_branch).and_return([])
       Octopusci::Queue.stub(:lismember).and_return(true)
       Octopusci::Queue.stub(:redis).and_return(r)
       r.should_receive(:set).with(Octopusci::Queue.github_payload_key('repo-name', 'branch-name'), Resque::encode(github_payload))
@@ -44,6 +51,7 @@ describe "Octopusci::Queueu" do
     it "should get the most recent job for the provided repo and branch combo if a matching job already exists" do
       proj_info = { :some => 'proj_info' }
       github_payload = { :some => 'github_payload' }
+      @mock_redis.stub(:set)
       Octopusci::Queue.stub(:lismember).and_return(true)
       Octopusci::JobStore.should_receive(:list_repo_branch).with('repo-name', 'branch-name', 0, 1).and_return([])
       Octopusci::Queue.enqueue('SomeTestJobKlass', 'repo-name', 'branch-name', github_payload, proj_info)      
@@ -52,6 +60,7 @@ describe "Octopusci::Queueu" do
     it "should update the job record with the new data from the github payload if a matching job already exists" do
       proj_info = { :some => 'proj_info' }
       github_payload = { :some => 'github_payload' }
+      @mock_redis.stub(:set)
       Octopusci::Queue.stub(:lismember).and_return(true)
       Octopusci::Helpers.stub(:gh_payload_to_job_attrs).and_return(github_payload)
       Octopusci::JobStore.stub(:list_repo_branch).and_return([ { 'id' => 23 }.merge(github_payload) ])
@@ -63,6 +72,7 @@ describe "Octopusci::Queueu" do
 
   describe "#lismember" do
     it "should get the size of the provided queue" do
+      @mock_redis.stub(:lrange)
       Resque.should_receive(:size).with("test:queue").and_return(0)
       Octopusci::Queue.lismember("test:queue", { :test => 'foo' })
     end

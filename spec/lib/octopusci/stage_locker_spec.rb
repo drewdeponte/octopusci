@@ -3,6 +3,7 @@ require 'spec_helper'
 describe "Octopusci::StageLocker" do
   describe "#load" do
     it "should clear the pool of stages" do
+      @mock_redis.stub(:rpush)
       Octopusci::StageLocker.should_receive(:clear)
       Octopusci::StageLocker.load(['a', 'b', 'c'])
     end
