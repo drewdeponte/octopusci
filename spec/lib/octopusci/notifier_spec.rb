@@ -8,20 +8,5 @@ describe Octopusci::Notifier do
   end
   
   describe "#job_complete" do
-    it "should send a multi-part email with the text version containing job status" do
-      pending
-      mail = Octopusci::Notifier.job_complete('joe@example.com', 'my output', 'my status').deliver()
-      
-      Octopusci::Notifier.deliveries.size.should == 1
-      mail.parts[0].body.should =~ /my output/
-    end
-    
-    it "should send a multi-part email with the html version containing job status" do
-      pending
-      mail = Octopusci::Notifier.job_complete('joe@example.com', 'my output', 'my status').deliver()
-      
-      Octopusci::Notifier.deliveries.size.should == 1
-      mail.parts[1].body.should =~ /my output/      
-    end
   end
 end

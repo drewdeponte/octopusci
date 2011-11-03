@@ -88,6 +88,7 @@ module Octopusci
       
         # Queue the job appropriately
         Octopusci::Queue.enqueue(proj_info['job_klass'], github_payload["repository"]["name"], branch_name, github_payload, proj_info)
+        return 200
       else
         return 200
       end
