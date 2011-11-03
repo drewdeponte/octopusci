@@ -3,8 +3,6 @@ require 'multi_json'
 require 'erb'
 require 'octopusci'
 
-require 'pp'
-
 module Octopusci
   class Server < Sinatra::Base
     dir = File.dirname(File.expand_path(__FILE__))
@@ -86,7 +84,6 @@ module Octopusci
       end
 
       if (github_payload["ref"] =~ /refs\/heads\//) && (github_payload["deleted"] != true)
-        puts "DREW: inside the if"
         branch_name = github_payload["ref"].gsub(/refs\/heads\//, '')
       
         # Queue the job appropriately
