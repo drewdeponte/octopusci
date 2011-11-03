@@ -1,8 +1,7 @@
 <script type="text/javascript" charset="utf-8">
   $(document).ready(function() {
     $('#jobs').delegate("a.show_hide_job_output", 'click', function() {
-      $('.job_output').not(this).hide();      
-      var job_cont = $(this).closest('.job_summary').next('.job_content')
+      var job_cont = $(this).closest('.job_summary').next('.job_content');
       var job_out = job_cont.find('.job_output').first();
       job_out.toggle();
       return false;      
@@ -25,7 +24,7 @@
         <%= erb :job_summary, :locals => { :j => j } %>
       </div>
       <div class="job_content">
-        <div class="job_output"><pre><code></code></pre></div>
+        <div class="job_output"><pre><code><%= Octopusci::IO.new(j).read_all_out %></code></pre></div>
       </div>
     </div>
   <% end %>
