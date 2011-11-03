@@ -64,7 +64,7 @@ module Octopusci
       protected!
       @job = Octopusci::JobStore.get(params[:job_id])
       content_type('text/plain')
-      return @job.status
+      return @job['status']
     end
     
     get '/jobs/:job_id/ajax_summary' do
@@ -78,18 +78,25 @@ module Octopusci
         raise "No payload paramater found, it is a required parameter."
       end
       github_payload = Octopusci::Helpers.decode(params["payload"])
+
+      puts "DREW: finished decode"
             
       # Make sure that the request is for a project Octopusci knows about
       proj_info = Octopusci::Helpers.get_project_info(github_payload["repository"]["name"], github_payload["repository"]["owner"]["name"])
       if proj_info.nil?
         return 404
       end
+
+      puts "DREW: proj_info = #{proj_info.inspect}"
       
       if (github_payload["ref"] =~ /refs\/heads\//) && (github_payload["deleted"] != true)
+        puts "DREW: inside the if"
         branch_name = github_payload["ref"].gsub(/refs\/heads\//, '')
       
+        puts "DREW: about to enquue"
         # Queue the job appropriately
         Octopusci::Queue.enqueue(proj_info['job_klass'], github_payload["repository"]["name"], branch_name, github_payload, proj_info)
+        puts "DREW: enqueued"
       else
         return 200
       end

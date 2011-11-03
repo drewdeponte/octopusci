@@ -28,16 +28,66 @@ module Octopusci
       @job.run_command(cmd_str, silently)
     end
 
-    def self.log(msg)
-      @job.write_output do |f|
-        f << "\n#{@current_context.join(' ')}:\n\t#{msg}" 
-      end
-    end
+    # def self.log(msg)
+    #   @job.write_output do |f|
+    #     f << "\n#{@current_context.join(' ')}:\n\t#{msg}" 
+    #   end
+    # end
 
     def self.failed!(msg = "")
       raise Octopusci::JobRunFailed.new(msg)
     end
-    
+
+    def self.record_start(job, stage)
+      job['started_at'] = Time.new
+      job['stage'] = stage
+      job['status'] = 'running'
+      Octopusci::JobStore.set(job['id'], job)
+    end
+
+    # def self.code_cloned?
+    #   return File.directory?(self.repository_path)
+    # end
+
+    # def self.clone_code(job, job_conf)
+    #   if self.code_cloned?
+    #     return 0
+    #   else
+    #     if !Dir.exists?(self.workspace_path)
+    #       FileUtils.mkdir_p(self.workspace_path)
+    #     end
+    #     return self.run_command("cd #{self.workspace_path} 2>&1 && git clone #{job_conf['repo_uri']} #{self.repo_name} 2>&1", true)
+    #   end
+    # end
+
+    # def self.run_command(cmd_str, silently=false)
+    #   write_raw_output(silently) do |out_f|
+    #     out_f << "\n\nRunning: #{cmd_str}\n"
+    #     out_f << "-"*30
+    #     out_f << "\n"
+    #     out_f.flush
+        
+    #     f = IO.popen(cmd_str)
+    #     while(cur_line = f.gets) do
+    #       out_f << cur_line
+    #       out_f.flush
+    #     end
+
+    #     f.close
+    #   end
+
+    #   return $?.exitstatus.to_i
+    # end
+
+    # def self.checkout_branch(job, job_conf)
+    #   if !self.code_cloned?(job)
+    #     self.clone_code(job_conf)
+    #   end
+      
+    #   return self.run_command("cd #{self.repository_path} 2>&1 && git fetch --all -p 2>&1 && git checkout #{self.branch_name} 2>&1 && git pull -f origin #{self.branch_name}:#{self.branch_name} 2>&1", true)
+    # end
+
+
     def self.perform(project_name, branch_name, job_id, job_conf)
       context_stack = []
 
@@ -54,27 +104,28 @@ module Octopusci
         # Using redis to get the associated github_payload
         github_payload = Octopusci::Queue.github_payload(project_name, branch_name)
         
-        @job = ::Job.where("jobs.repo_name = ? && jobs.ref = ?", github_payload['repository']['name'], github_payload['ref']).order('jobs.created_at DESC').first
+        @job = Octopusci::JobStore.list_repo_branch(github_payload['repository']['name'], github_payload['ref'].split('/').last, 0, 1).first
+        # io = Octopusci::IO.new(@job)
         if @job
-          @job.record_start!(stage)
+          self.record_start(@job, stage)
           
           begin
-            @job.clone_code(job_conf)
-            @job.checkout_branch(job_conf)
+        #     self.clone_code(@job, job_conf)
+        #     @job.checkout_branch(job_conf)
             
             self.run(@job)
 
-            @job.status = 'successful'
+            @job['status'] = 'successful'
           rescue JobHalted => e
-            @job.write_exception(e)            
-            @job.status = 'failed'
+        #     @job.write_exception(e)            
+            @job['status'] = 'failed'
           rescue => e
-            @job.write_exception(e)
-            @job.status = 'error'
+        #     @job.write_exception(e)
+            @job['status'] = 'error'
           ensure
-            @job.ended_at = Time.new
-            @job.save
-            Octopusci::Notifier.job_complete(@job, job_conf, @job.successful?)
+            @job['ended_at'] = Time.new
+            Octopusci::JobStore.set(@job['id'], @job)
+            # Octopusci::Notifier.job_complete(@job, job_conf, @job.successful?)
           end
         end
       ensure

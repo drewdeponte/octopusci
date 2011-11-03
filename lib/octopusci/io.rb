@@ -22,7 +22,34 @@ module Octopusci
       end
     end
 
+    def write_out(msg="", &block)
+      write_raw_output(false, msg, &block)
+    end
+
+    def write_log(msg="", &block)
+      write_raw_output(true, msg, &block)
+    end
+
     private
+
+    def write_raw_output(silently=false, msg="")
+      # Make sure that the directory structure is in place for the job output.
+      if !File.directory?(self.abs_output_base_path)
+        FileUtils.mkdir_p(self.abs_output_base_path)
+      end
+      
+      # Run the command and output the output to the job file
+      out_f = if silently
+        File.open(self.abs_log_file_path, 'a')
+      else
+        File.open(self.abs_output_file_path, 'a')
+      end
+
+      yield(out_f) if block_given?
+      out_f << msg unless msg.nil? || msg.empty?
+
+      out_f.close
+    end
 
     def abs_output_file_path
       return "#{abs_output_base_path}/output.txt"
@@ -33,7 +60,7 @@ module Octopusci
     end
 
     def abs_output_base_path
-      return "#{Octopusci::Config['general']['workspace_base_path']}/jobs/#{job.id}"
+      return "#{Octopusci::Config['general']['workspace_base_path']}/jobs/#{@job['id']}"
     end
   end
 end

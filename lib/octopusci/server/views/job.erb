@@ -11,7 +11,7 @@
     }, 5000);
   });
 </script>
-<div id="job_<%= @job.id%>" class="job status_<%= @job.status %>" data-status-url="/jobs/<%= @job.id %>/status" data-output-url="/jobs/<%= @job.id %>/output" data-silent-output-url="/jobs/<%= @job.id %>/silent_output" data-summary-url="/jobs/<%= @job.id %>/ajax_summary">
+<div id="job_<%= @job['id']%>" class="job status_<%= @job['status'] %>" data-status-url="/jobs/<%= @job['id'] %>/status" data-output-url="/jobs/<%= @job['id'] %>/output" data-silent-output-url="/jobs/<%= @job['id'] %>/silent_output" data-summary-url="/jobs/<%= @job['id'] %>/ajax_summary">
   <div class="job_summary">
     <%= erb :job_summary, :locals => { :j => @job } %>
   </div>

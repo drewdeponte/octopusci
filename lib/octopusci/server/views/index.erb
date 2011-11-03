@@ -20,12 +20,12 @@
 </script>
 <div id="jobs">
   <% @jobs.each do |j| %>
-    <div id="job_<%= j.id%>" class="job status_<%= j.status %>" data-status-url="/jobs/<%= j.id %>/status" data-output-url="/jobs/<%= j.id %>/output" data-summary-url="/jobs/<%= j.id %>/ajax_summary">
+    <div id="job_<%= j['id']%>" class="job status_<%= j['status'] %>" data-status-url="/jobs/<%= j['id'] %>/status" data-output-url="/jobs/<%= j['id'] %>/output" data-summary-url="/jobs/<%= j['id'] %>/ajax_summary">
       <div class="job_summary">
         <%= erb :job_summary, :locals => { :j => j } %>
       </div>
       <div class="job_content">
-        <div class="job_output"><pre><code><%= j.output %></code></pre></div>
+        <div class="job_output"><pre><code></code></pre></div>
       </div>
     </div>
   <% end %>

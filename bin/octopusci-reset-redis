@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
+
+require 'rubygems'
+require 'octopusci'
+
+num_jobs = Octopusci::JobStore.size
+jobs = Octopusci::JobStore.list(0, num_jobs)
+
+jobs.each do |j|
+  # delete the actual job record
+  Octopusci::JobStore.redis.del("octopusci:jobs:#{j['id']}")
+
+  # delete the repo_name, branch_name job references
+  Octopusci::JobStore.redis.del("octopusci:#{j['repo_name']}:#{j['branch_name']}:jobs")
+
+  # delete the github payload for the repo_name, branch_name
+  Octopusci::JobStore.redis.del("octopusci:github_payload:#{j['repo_name']}:#{j['branch_name']}")
+
+end
+
+Octopusci::JobStore.redis.del('octopusci:job_count')
+Octopusci::JobStore.redis.del('octopusci:jobs')
+Octopusci::JobStore.redis.del('octopusci:stagelocker')
+Octopusci::JobStore.redis.del('queue:octopusci:commit')
