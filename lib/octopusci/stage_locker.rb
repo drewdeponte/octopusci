@@ -8,19 +8,19 @@ module Octopusci
     end
     
     def self.clear
-      Resque.redis.del('octopusci:stagelocker')
+      self.redis.del('octopusci:stagelocker')
     end
     
     def self.pop
-      Resque.redis.lpop('octopusci:stagelocker')
+      self.redis.lpop('octopusci:stagelocker')
     end
     
     def self.rem(v)
-      Resque.redis.lrem('octopusci:stagelocker', 1, v)
+      self.redis.lrem('octopusci:stagelocker', 1, v)
     end
     
     def self.push(v)
-      Resque.redis.rpush('octopusci:stagelocker', v)
+      self.redis.rpush('octopusci:stagelocker', v)
     end
     
     def self.stages
@@ -28,8 +28,12 @@ module Octopusci
     end
     
     def self.pool
-      len = Resque.size('octopusci:stagelocker')
-      Resque.peek('octopusci:stagelocker', 0, len)
+      len = self.redis.size('octopusci:stagelocker')
+      self.redis.peek('octopusci:stagelocker', 0, len)
+    end
+
+    def self.redis
+      Resque.redis
     end
   end
 end
