@@ -9,9 +9,9 @@ module Octopusci
     def read_all_out
       if File.exists?(abs_output_file_path)
         cont = ""
-        File.open(abs_output_file_path, 'r') do |f|
-          cont = f.read()
-        end
+        f = File.open(abs_output_file_path, 'r')
+        cont = f.read()
+        f.close
         return cont
       else
         return ""
