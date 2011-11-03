@@ -8,7 +8,11 @@ module Octopusci
 
     def read_all_out
       if File.exists?(abs_output_file_path)
-        return File.open(abs_output_file_path, 'r').read()
+        cont = ""
+        File.open(abs_output_file_path, 'r') do |f|
+          cont = f.read()
+        end
+        return cont
       else
         return ""
       end
@@ -30,19 +34,17 @@ module Octopusci
       write_raw_output(true, msg, &block)
     end
 
-    private
-
     def write_raw_output(silently=false, msg="")
       # Make sure that the directory structure is in place for the job output.
-      if !File.directory?(self.abs_output_base_path)
-        FileUtils.mkdir_p(self.abs_output_base_path)
+      if !File.directory?(abs_output_base_path)
+        FileUtils.mkdir_p(abs_output_base_path)
       end
       
       # Run the command and output the output to the job file
       out_f = if silently
-        File.open(self.abs_log_file_path, 'a')
+        File.open(abs_log_file_path, 'a')
       else
-        File.open(self.abs_output_file_path, 'a')
+        File.open(abs_output_file_path, 'a')
       end
 
       yield(out_f) if block_given?
@@ -50,6 +52,8 @@ module Octopusci
 
       out_f.close
     end
+
+    private
 
     def abs_output_file_path
       return "#{abs_output_base_path}/output.txt"
