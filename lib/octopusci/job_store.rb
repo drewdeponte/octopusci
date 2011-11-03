@@ -1,5 +1,3 @@
-require 'ostruct'
-
 module Octopusci
   class JobStore
     def self.prepend(job)

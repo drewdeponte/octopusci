@@ -51,10 +51,10 @@ describe "Octopusci::Server" do
 
     before(:each) do
       @job_id = "234"
-      @job = stub('job', :id => @job_id, :status => 'pending',
-          :payload => { 'repository' => { 'url' => 'http://somewhere.com' }, 'pusher' => { 'email' => 'bob@example.com' } },
-          :repo_name => 'bar', :branch_name => 'foo', :created_at => Time.now, :started_at => Time.now,
-          :ended_at => Time.now + 1000, :compare => 'http://compareurl.com', :stage => 'test_a')
+      @job = { 'id' => @job_id, 'status' => 'pending',
+          'payload' => { 'repository' => { 'url' => 'http://somewhere.com' }, 'pusher' => { 'email' => 'bob@example.com' } },
+          'repo_name' => 'bar', 'branch_name' => 'foo', 'created_at' => Time.now, 'started_at' => Time.now,
+          'ended_at' => Time.now + 1000, 'compare' => 'http://compareurl.com', 'stage' => 'test_a', 'ref' => 'refs/heads/foo' }
     end
 
     describe "GET /jobs/:job_id" do

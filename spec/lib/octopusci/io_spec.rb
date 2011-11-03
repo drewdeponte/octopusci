@@ -13,19 +13,19 @@ describe Octopusci::IO do
       file = stub('file').as_null_object
       File.stub(:exists?).and_return(true)
       File.should_receive(:open).and_return(file)
-      Octopusci::IO.new(OpenStruct.new({ :id => 23 })).read_all_out
+      Octopusci::IO.new({ :id => 23 }).read_all_out
     end
 
     it "should return all the file content if the output file exists" do
       file = stub('file', :read => 'file content')
       File.stub(:exists?).and_return(true)
       File.stub(:open).and_return(file)
-      Octopusci::IO.new(OpenStruct.new({ :id => 23 })).read_all_out.should == 'file content'
+      Octopusci::IO.new({ :id => 23 }).read_all_out.should == 'file content'
     end
 
     it "should return an empty string if the file does not exist" do
       File.stub(:exists?).and_return(false)
-      Octopusci::IO.new(OpenStruct.new({ :id => 23 })).read_all_out.should == ""
+      Octopusci::IO.new({ :id => 23 }).read_all_out.should == ""
     end
   end
 
@@ -34,19 +34,19 @@ describe Octopusci::IO do
       file = stub('file').as_null_object
       File.stub(:exists?).and_return(true)
       File.should_receive(:open).and_return(file)
-      Octopusci::IO.new(OpenStruct.new({ :id => 23 })).read_all_log
+      Octopusci::IO.new({ :id => 23 }).read_all_log
     end
 
     it "should return all the file content if the log file exists" do
       file = stub('file', :read => 'file content')
       File.stub(:exists?).and_return(true)
       File.stub(:open).and_return(file)
-      Octopusci::IO.new(OpenStruct.new({ :id => 23 })).read_all_log.should == 'file content'
+      Octopusci::IO.new({ :id => 23 }).read_all_log.should == 'file content'
     end
 
     it "should return an empty string if the file does not exist" do
       File.stub(:exists?).and_return(false)
-      Octopusci::IO.new(OpenStruct.new({ :id => 23 })).read_all_log.should == ""
+      Octopusci::IO.new({ :id => 23 }).read_all_log.should == ""
     end
   end
 

@@ -7,15 +7,15 @@ describe Octopusci::JobStore do
       r = mock('redis').as_null_object
       Octopusci::JobStore.stub(:redis).and_return(r)
       r.should_receive(:incr).with('octopusci:job_count')
-      Octopusci::JobStore.prepend({ "stub_job" => "foo"})
+      Octopusci::JobStore.prepend({ "stub_job" => "foo", 'ref' => 'refs/heads/master' })
     end
 
     it "should store the job record" do
       r = mock('redis').as_null_object
       Octopusci::JobStore.stub(:redis).and_return(r)
       r.stub(:incr).and_return(1)
-      Octopusci::JobStore.should_receive(:set).with(1, { "stub_job" => "foo", :id => 1 })
-      Octopusci::JobStore.prepend({ "stub_job" => "foo"})
+      Octopusci::JobStore.should_receive(:set).with(1, { "stub_job" => "foo", 'ref' => 'refs/heads/master', 'id' => 1 })
+      Octopusci::JobStore.prepend({ "stub_job" => "foo", 'ref' => 'refs/heads/master' })
     end
 
     it "should prepend the job id to the job ids list" do
@@ -23,7 +23,7 @@ describe Octopusci::JobStore do
       Octopusci::JobStore.stub(:redis).and_return(r)
       r.stub(:incr).and_return(10)
       r.should_receive(:lpush).with("octopusci:jobs", 10)
-      Octopusci::JobStore.prepend({ "stub_job" => "foo"})
+      Octopusci::JobStore.prepend({ "stub_job" => "foo", 'ref' => 'refs/heads/master' })
     end
 
     it "should prepend the job id to the project, branch, job ids list" do
@@ -31,14 +31,14 @@ describe Octopusci::JobStore do
       Octopusci::JobStore.stub(:redis).and_return(r)
       r.stub(:incr).and_return(10)
       r.should_receive(:lpush).with("octopusci:foo:bar:jobs", 10)
-      Octopusci::JobStore.prepend({ :repo_name => 'foo', :ref => 'bar' })      
+      Octopusci::JobStore.prepend({ 'repo_name' => 'foo', 'ref' => 'refs/heads/bar' })      
     end
 
     it "should return the prepended jobs id" do
       r = mock('redis').as_null_object
       r.stub(:incr).and_return(1)
       Octopusci::JobStore.stub(:redis).and_return(r)
-      Octopusci::JobStore.prepend({ "stub_job" => "foo"}).should == 1
+      Octopusci::JobStore.prepend({ "stub_job" => "foo", 'ref' => 'refs/heads/foo' }).should == 1
     end
   end
 
