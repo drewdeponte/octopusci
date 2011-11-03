@@ -103,25 +103,26 @@
         height: 26px;
         display: block;
         margin: 0 0 0 0;
+        background-position: 0px -74px; /* pending... in the case that no status specific class is provided but this is, the default case */
       }
       
-      .successful {
+      .status.successful {
         background-position: 0px 0px;
       }
       
-      .failed {
+      .status.failed {
         background-position: 0px -26px;
       }
       
-      .running {
+      .status.running {
         background-position: 0px -52px;
       }
       
-      .pending {
+      .status.pending {
         background-position: 0px -74px;
       }
 
-      .error {
+      .status.error {
         background-position: 0px -26px;
       }
     </style>
