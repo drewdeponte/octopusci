@@ -15,7 +15,7 @@ module Octopusci
         end        
       else
         # Create a new job for this project with the appropriate data
-        job_id = Octopusci::JobStore.prepend(Octopusci::Helpers.gh_payload_to_job_attrs(github_payload).merge(:status => 'pending'))
+        job_id = Octopusci::JobStore.prepend(Octopusci::Helpers.gh_payload_to_job_attrs(github_payload).merge('status' => 'pending'))
         resque_opts["args"] << job_id
         resque_opts["args"] << job_conf
         self.redis.set(gh_pl_key, Resque::encode(github_payload))
