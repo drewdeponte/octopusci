@@ -24,18 +24,46 @@ module Octopusci
       end
     end
 
-    def self.run_shell_cmd(cmd_str, silently=false)
-      @job.run_command(cmd_str, silently)
-    end
+    def self.run_shell_cmd(cmd_str, output_to_log=false)
+      @io.write_raw_output(output_to_log) do |out_f|
+        out_f << "\n\nRunning: #{cmd_str}\n"
+        out_f << "-"*30
+        out_f << "\n"
+        out_f.flush
+      
+        in_f = IO.popen(cmd_str)
+        while(cur_line = in_f.gets) do
+          out_f << cur_line
+          out_f.flush
+        end
 
-    # def self.log(msg)
-    #   @job.write_output do |f|
-    #     f << "\n#{@current_context.join(' ')}:\n\t#{msg}" 
-    #   end
-    # end
+        f.close
+      end
+
+      return $?.exitstatus.to_i
+    end
 
     def self.failed!(msg = "")
       raise Octopusci::JobRunFailed.new(msg)
+    end
+
+    def self.output(msg)
+      @io.write_raw_output(false, msg)
+    end
+
+    def self.log(msg)
+      @io.write_raw_output(true) do |f|
+        f << "\n#{context_stack.join(' ')}:\n\t#{msg}" 
+      end
+    end
+
+    def self.write_exception(e)
+      @io.write_raw_output do |f|
+        f << "\n\nException: #{e.message}\n"
+        f << "-"*30
+        f << "\n"
+        f << e.backtrace.join("\n")
+      end
     end
 
     def self.record_start(job, stage)
@@ -58,25 +86,6 @@ module Octopusci
     #     end
     #     return self.run_command("cd #{self.workspace_path} 2>&1 && git clone #{job_conf['repo_uri']} #{self.repo_name} 2>&1", true)
     #   end
-    # end
-
-    # def self.run_command(cmd_str, silently=false)
-    #   write_raw_output(silently) do |out_f|
-    #     out_f << "\n\nRunning: #{cmd_str}\n"
-    #     out_f << "-"*30
-    #     out_f << "\n"
-    #     out_f.flush
-        
-    #     f = IO.popen(cmd_str)
-    #     while(cur_line = f.gets) do
-    #       out_f << cur_line
-    #       out_f.flush
-    #     end
-
-    #     f.close
-    #   end
-
-    #   return $?.exitstatus.to_i
     # end
 
     # def self.checkout_branch(job, job_conf)
@@ -105,8 +114,8 @@ module Octopusci
         github_payload = Octopusci::Queue.github_payload(project_name, branch_name)
         
         @job = Octopusci::JobStore.list_repo_branch(github_payload['repository']['name'], github_payload['ref'].split('/').last, 0, 1).first
-        # io = Octopusci::IO.new(@job)
         if @job
+          @io = Octopusci::IO.new(@job)
           self.record_start(@job, stage)
           
           begin
@@ -117,10 +126,10 @@ module Octopusci
 
             @job['status'] = 'successful'
           rescue JobHalted => e
-        #     @job.write_exception(e)            
+            write_exception(e)            
             @job['status'] = 'failed'
           rescue => e
-        #     @job.write_exception(e)
+            write_exception(e)
             @job['status'] = 'error'
           ensure
             @job['ended_at'] = Time.new
