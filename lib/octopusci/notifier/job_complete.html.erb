@@ -1,11 +1,84 @@
+<% j = @job %>
 <!DOCTYPE html>
 <html>
   <head>
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
   </head>
   <body>
-    <h1>Octopusci Build (<%= @status_str %>) - <%= @job.repo_name %> / <%= @job.branch_name %></h1>
-    <h2>Output:</h2>
-    <pre><code><%= @job.output %></code></pre>
+  	<div style="background-color: #333; color: #fff; width: 100%;">
+  		<div style="padding: 10px; font-size: 16px;">Octopusci Build (<%= @status_str %>) - <a style="color: #fff" href="<%= @job['payload']['repository']['url'] %>"><%= @job['repo_name'] %></a> / <a style="color: #fff" href="<%= Octopusci::Config['general']['base_url'] %>/<%= @job['repo_name'] %>/<%= @job['branch_name'] %>"><%= @job['branch_name'] %></a></div>
+	  	<div style="background-color: #e2e2e2; padding: 20px;">
+	  		<div style="background-color: #ffffff; color: #333;">
+	  			<div style="background-color: #F9F9F9; padding: 10px; border: 1px dotted #E6E6E6;">
+	  				<div style="padding: 10px; color: #7A7A7A;">
+				      <table style="color: #7A7A7A;">
+				      	<tr>
+				      		<td style="text-align: right;">Status:</td>
+				      		<td style="width: 200px;"><span style="<% if @success %>color: #78be3f;<% else %>color: red;<% end %>"><%= @status_str %></span></td>
+				      	</tr>
+						    <tr>
+						      <td style="text-align: right;">Job:</td>
+						      <td style="width: 200px;"><a style="color: #333;" href="<%= Octopusci::Config['general']['base_url'] %>/jobs/<%= j['id'] %>"><%= j['id'] %></a></td>
+						      <td style="text-align: right;">Before Commit:</td>
+						      <td>
+						        <% if !j['payload']['created'] %>
+						          <%= j['payload']['before'] %>
+						        <% else %>
+						          No before commit, remote branch was created with this push.
+						        <% end %>
+						      </td>
+						    </tr>
+						    <tr>
+						      <td style="text-align: right;">Finished:</td>
+						      <td>
+						        <% if j['ended_at'] %>
+						          <%= j['ended_at'].ago_in_words %>
+						        <% else %>
+						          -
+						        <% end %>
+						      </td>
+						      <td style="text-align: right;">After Commit:</td>
+						      <td>
+						        <%= j['payload']['after'] %>
+						      </td>
+						    </tr>
+						    <tr>
+						      <td style="text-align: right;">Duration:</td>
+						      <td>
+						        <% if j['ended_at'] && j['started_at'] %>
+						          <%= ((j['ended_at'] - j['started_at'])/60).to_i %> minutes
+						        <% else %>
+						          -
+						        <% end %>
+						      </td>
+						      <td style="text-align: right;">Compare:</td>
+						      <td><a style="color: #333;" href="<%= j['compare'] %>"><%= j['compare'] %></a></td>
+						    </tr>
+						    <tr>
+						      <td style="text-align: right;">Stage:</td>
+						      <td><%= j['stage'] %></td>
+						      <td style="text-align: right;">Pusher:</td>
+						      <td>
+						        <% if j['payload']['pusher']['email'] %>
+						          <a style="color: #333;" href="mailto:<%= j['payload']['pusher']['name'] %>"><%= j['payload']['pusher']['name'] %></a>
+						        <% else %>
+						          <%= j['payload']['pusher']['name'] %>
+						        <% end %>
+						      </td>
+						    </tr>
+						    <tr>
+						    	<td style="text-align: right;">Output:</td>
+						    	<td></td>
+						    	<td style="text-align: right;">Context:</td>
+				      		<td><%= @context_str %></td>
+						    </tr>
+						  </table>
+					  </div>
+				    <div style="background-color: #333; color: #fff; padding: 10px;">
+				    	<pre><code><%= Octopusci::IO.new(@job).read_all_out %></code></pre>
+				    </div>
+				   </div>
+	  		</div>
+  	</div>
   </body>
 </html>

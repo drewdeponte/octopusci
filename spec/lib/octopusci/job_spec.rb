@@ -29,12 +29,18 @@ describe Octopusci::Job do
   describe "self.context" do
     it "should push context string onto the context stack" do
       class SomeJob < Octopusci::Job; end
+      SomeJob.stub(:output)
+      SomeJob.stub(:get_recip_email)
+      Octopusci::Notifier.stub_chain(:job_complete, :deliver)
       SomeJob.context_stack.should_receive(:push).with("commit")
       SomeJob.context("commit") {}
     end
 
     it "should execute the given block" do
       class SomeJob < Octopusci::Job; end
+      SomeJob.stub(:output)
+      SomeJob.stub(:get_recip_email)
+      Octopusci::Notifier.stub_chain(:job_complete, :deliver)
       @a = mock('some_inst_var_in_block')
       @a.should_receive(:foo)
       SomeJob.context("commit") { @a.foo }
@@ -42,6 +48,9 @@ describe Octopusci::Job do
 
     it "should pop context string off the context stack" do
       class SomeJob < Octopusci::Job; end
+      SomeJob.stub(:output)
+      SomeJob.stub(:get_recip_email)
+      Octopusci::Notifier.stub_chain(:job_complete, :deliver)
       SomeJob.context_stack.should_receive(:pop)
       SomeJob.context("commit") {}
     end
@@ -49,6 +58,9 @@ describe Octopusci::Job do
     it "should pop context even if an exception is thrown inside the context" do
       class SomeJob < Octopusci::Job; end
       class FooExcep < RuntimeError; end
+      SomeJob.stub(:output)
+      SomeJob.stub(:get_recip_email)
+      Octopusci::Notifier.stub_chain(:job_complete, :deliver)
       SomeJob.context_stack.should_receive(:pop)
       begin
         SomeJob.context("commit") { raise FooExcep.new('aoeuaoee') }
@@ -65,6 +77,10 @@ describe Octopusci::Job do
           end
         end
       end
+      SomeJob.stub(:write_exception)
+      SomeJob.stub(:output)
+      SomeJob.stub(:get_recip_email)
+      Octopusci::Notifier.stub_chain(:job_complete, :deliver)
       expect { SomeJob.run(job_rec) }.to raise_error(Octopusci::JobHalted)
     end
 
@@ -81,6 +97,10 @@ describe Octopusci::Job do
           end
         end
       end
+      SomeJob.stub(:write_exception)
+      SomeJob.stub(:output)
+      SomeJob.stub(:get_recip_email)
+      Octopusci::Notifier.stub_chain(:job_complete, :deliver)
       begin
         SomeJob.run(job_rec)
       rescue Octopusci::JobHalted

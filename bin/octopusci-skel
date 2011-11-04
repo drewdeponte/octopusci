@@ -19,6 +19,8 @@ if !File.exists?(CONFIG_PATH)
   File.open(CONFIG_PATH, 'w') do |f|
     f << "general:
   jobs_path: \"/etc/octopusci/jobs\"
+  base_url: \"http://localhost:9998\"
+  workspace_base_path: \"/Users/octopusci/.octopusci\"
 
 http_basic:
   username: admin
@@ -33,13 +35,6 @@ smtp:
   user_name: someuser@example.com
   password: somepassword
   raise_delivery_errors: true
-
-db:
-  adapter: mysql
-  host: localhost
-  database: octopusci
-  username: someusername
-  password: somepassword
 
 projects:
   - { name: octopusci, owner: cyphactor, job_klass: SomeJobClass, repo_uri: 'git@github.com:cyphactor/octopusci.git', default_email: devs@example.com }

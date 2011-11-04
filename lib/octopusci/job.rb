@@ -13,27 +13,37 @@ module Octopusci
     end
 
     def self.context(desc_str)
+      num_contexts_before = context_stack.length
+      context_lead_in = '  '*num_contexts_before
       context_stack.push(desc_str)
+      num_contexts_now = context_stack.length
+      @output_lead_in = '  '*num_contexts_now
+      context_str = context_stack.join(' ')
+      output("\n\n#{desc_str}:\n\n")
       begin
         yield
+        Octopusci::Notifier.job_complete(@job, get_recip_email(), context_str, true).deliver
       rescue Octopusci::JobRunFailed => e
+        write_exception(e)
+        Octopusci::Notifier.job_complete(@job, get_recip_email(), context_str, false).deliver
         # setup notification and send notification
-        raise JobHalted.new("JobRunFailed: #{e.message}")
+        raise JobHalted.new("JobRunFailed:\n  Context: #{context_str}\n  Message: #{e.message}")
       ensure
         context_stack.pop
       end
     end
 
     def self.run_shell_cmd(cmd_str, output_to_log=false)
+      horiz_line = "-"*30
       @io.write_raw_output(output_to_log) do |out_f|
-        out_f << "\n\nRunning: #{cmd_str}\n"
-        out_f << "-"*30
+        out_f << "\n\n#{@output_lead_in}Running: #{cmd_str}\n"
+        out_f << "#{@output_lead_in}#{horiz_line}"
         out_f << "\n"
         out_f.flush
       
         in_f = ::IO.popen(cmd_str)
         while(cur_line = in_f.gets) do
-          out_f << cur_line
+          out_f << "#{@output_lead_in}#{cur_line}"
           out_f.flush
         end
 
@@ -43,12 +53,21 @@ module Octopusci
       return $?.exitstatus.to_i
     end
 
+    def self.run_shell_cmd!(cmd_str, output_to_log=false)
+      r = self.run_shell_cmd(cmd_str, output_to_log)
+      if (r != 0)
+        raise Octopusci::JobRunFailed.new("#{cmd_str} exited with non-zero return value (#{r})")
+      else
+        return 0
+      end
+    end
+
     def self.failed!(msg = "")
       raise Octopusci::JobRunFailed.new(msg)
     end
 
     def self.output(msg)
-      @io.write_raw_output(false, msg)
+      @io.write_raw_output(false, "#{@output_lead_in}#{msg}")
     end
 
     def self.log(msg)
@@ -96,8 +115,22 @@ module Octopusci
       return run_shell_cmd("cd #{repository_path} 2>&1 && git fetch --all -p 2>&1 && git checkout #{@job['branch_name']} 2>&1 && git pull -f origin #{@job['branch_name']}:#{@job['branch_name']} 2>&1", true)
     end
 
+    def self.get_recip_email
+      recip_email = nil
+      if @job['branch_name'] == 'master'
+        recip_email = @job_conf['default_email']
+      else
+        if @job['payload']['pusher']['email']
+          recip_email = @job['payload']['pusher']['email']
+        else
+          recip_email = @job_conf['default_email']
+        end
+      end
+    end
+
     def self.perform(project_name, branch_name, job_id, job_conf)
       context_stack = []
+      @job_conf = job_conf
 
       # Note: There is no logic for handling stage coming back as nil because
       # it should never happen because there are the same number of resque
@@ -125,7 +158,6 @@ module Octopusci
 
             @job['status'] = 'successful'
           rescue JobHalted => e
-            write_exception(e)            
             @job['status'] = 'failed'
           rescue => e
             write_exception(e)

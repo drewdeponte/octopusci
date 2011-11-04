@@ -17,15 +17,13 @@ Gem::Specification.new do |s|
   s.files       += Dir.glob("bin/**/*")
   s.files       += Dir.glob("man/**/*")
   s.files       += Dir.glob("spec/**/*")
-  s.files       += Dir.glob("db/**/*")
   s.files       += Dir.glob("extra/**/*")
-  s.executables = [ "octopusci-tentacles", "octopusci-skel", "octopusci-db-migrate" ]
+  s.executables = [ "octopusci-tentacles", "octopusci-skel" ]
   
   s.add_dependency 'sinatra'
   s.add_dependency 'json'
   s.add_dependency 'resque'
   s.add_dependency 'actionmailer'
-  s.add_dependency 'mysql'
   s.add_dependency 'multi_json'
   s.add_dependency 'time-ago-in-words'
   
