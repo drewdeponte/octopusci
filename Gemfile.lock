@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    octopusci (0.2.3)
+    octopusci (0.3.1)
       actionmailer
       json
       multi_json
