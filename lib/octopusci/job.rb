@@ -41,7 +41,7 @@ module Octopusci
         out_f << "\n"
         out_f.flush
       
-        in_f = ::IO.popen(cmd_str)
+        in_f = ::IO.popen("cd #{repository_path} && #{cmd_str}")
         while(cur_line = in_f.gets) do
           out_f << "#{@output_lead_in}#{cur_line}"
           out_f.flush
