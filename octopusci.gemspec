@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.email       = ['cyphactor@gmail.com', 'sarmiena@gmail.com']
   s.homepage    = 'https://github.com/cyphactor/octopusci'
   
-  s.files       = %w( README LICENSE config.ru )
+  s.files       = %w( README.markdown LICENSE config.ru )
   s.files       += Dir.glob("lib/**/*")
   s.files       += Dir.glob("bin/**/*")
   s.files       += Dir.glob("man/**/*")
