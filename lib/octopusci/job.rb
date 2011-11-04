@@ -31,13 +31,13 @@ module Octopusci
         out_f << "\n"
         out_f.flush
       
-        in_f = IO.popen(cmd_str)
+        in_f = ::IO.popen(cmd_str)
         while(cur_line = in_f.gets) do
           out_f << cur_line
           out_f.flush
         end
 
-        f.close
+        in_f.close
       end
 
       return $?.exitstatus.to_i
@@ -66,36 +66,35 @@ module Octopusci
       end
     end
 
-    def self.record_start(job, stage)
-      job['started_at'] = Time.new
-      job['stage'] = stage
-      job['status'] = 'running'
-      Octopusci::JobStore.set(job['id'], job)
+    def self.record_start(stage)
+      @job['started_at'] = Time.new
+      @job['stage'] = stage
+      @job['status'] = 'running'
+      Octopusci::JobStore.set(@job['id'], @job)
     end
 
-    # def self.code_cloned?
-    #   return File.directory?(self.repository_path)
-    # end
+    def self.workspace_path
+      return "#{Octopusci::Config['general']['workspace_base_path']}/#{@job['stage']}"
+    end
 
-    # def self.clone_code(job, job_conf)
-    #   if self.code_cloned?
-    #     return 0
-    #   else
-    #     if !Dir.exists?(self.workspace_path)
-    #       FileUtils.mkdir_p(self.workspace_path)
-    #     end
-    #     return self.run_command("cd #{self.workspace_path} 2>&1 && git clone #{job_conf['repo_uri']} #{self.repo_name} 2>&1", true)
-    #   end
-    # end
+    def self.repository_path
+      return "#{workspace_path}/#{@job['repo_name']}"
+    end
 
-    # def self.checkout_branch(job, job_conf)
-    #   if !self.code_cloned?(job)
-    #     self.clone_code(job_conf)
-    #   end
-      
-    #   return self.run_command("cd #{self.repository_path} 2>&1 && git fetch --all -p 2>&1 && git checkout #{self.branch_name} 2>&1 && git pull -f origin #{self.branch_name}:#{self.branch_name} 2>&1", true)
-    # end
+    def self.clone_code(job_conf)
+      if File.directory?(repository_path)
+        return 0
+      else
+        if !Dir.exists?(workspace_path)
+          FileUtils.mkdir_p(workspace_path)
+        end
+        return run_shell_cmd("cd #{workspace_path} 2>&1 && git clone #{job_conf['repo_uri']} #{@job['repo_name']} 2>&1", true)
+      end
+    end
 
+    def self.checkout_branch(job_conf)
+      return run_shell_cmd("cd #{repository_path} 2>&1 && git fetch --all -p 2>&1 && git checkout #{@job['branch_name']} 2>&1 && git pull -f origin #{@job['branch_name']}:#{@job['branch_name']} 2>&1", true)
+    end
 
     def self.perform(project_name, branch_name, job_id, job_conf)
       context_stack = []
@@ -116,11 +115,11 @@ module Octopusci
         @job = Octopusci::JobStore.list_repo_branch(github_payload['repository']['name'], github_payload['ref'].split('/').last, 0, 1).first
         if @job
           @io = Octopusci::IO.new(@job)
-          self.record_start(@job, stage)
+          record_start(stage)
           
           begin
-        #     self.clone_code(@job, job_conf)
-        #     @job.checkout_branch(job_conf)
+            clone_code(job_conf)
+            checkout_branch(job_conf)
             
             self.run(@job)
 
@@ -134,7 +133,6 @@ module Octopusci
           ensure
             @job['ended_at'] = Time.new
             Octopusci::JobStore.set(@job['id'], @job)
-            # Octopusci::Notifier.job_complete(@job, job_conf, @job.successful?)
           end
         end
       ensure
