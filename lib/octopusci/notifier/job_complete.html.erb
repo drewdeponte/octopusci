@@ -6,7 +6,7 @@
   </head>
   <body>
   	<div style="background-color: #333; color: #fff; width: 100%;">
-  		<div style="padding: 10px; font-size: 16px;">Octopusci Build (<%= @status_str %>) - <a style="color: #fff" href="<%= @job['payload']['repository']['url'] %>"><%= @job['repo_name'] %></a> / <a style="color: #fff" href="<%= Octopusci::Config['general']['base_url'] %>/<%= @job['repo_name'] %>/<%= @job['branch_name'] %>"><%= @job['branch_name'] %></a></div>
+  		<div style="padding: 10px; font-size: 16px;">Octopusci Build (<%= @status_str %>) - <a style="color: #fff" href="<%= @job['payload']['repository']['url'] %>"><%= @job['repo_name'] %></a> / <a style="color: #fff" href="<%= Octopusci::Config['general']['base_url'] %>/<%= @job['repo_name'] %>/<%= @job['branch_name'] %>/jobs"><%= @job['branch_name'] %></a></div>
 	  	<div style="background-color: #e2e2e2; padding: 20px;">
 	  		<div style="background-color: #ffffff; color: #333;">
 	  			<div style="background-color: #F9F9F9; padding: 10px; border: 1px dotted #E6E6E6;">
