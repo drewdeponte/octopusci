@@ -50,6 +50,52 @@ describe Octopusci::IO do
     end
   end
 
+  describe "#read_all_out_as_html" do
+    it "should get all the output using read_all_out" do
+      io = Octopusci::IO.new({ 'id' => 23 })
+      io.should_receive(:read_all_out).and_return("\e[31msome stuff\e[0m")
+      io.read_all_out_as_html
+    end
+
+    it "should parse the output using ansi2html" do
+      io = Octopusci::IO.new({ 'id' => 23 })
+      io.stub(:read_all_out).and_return("raw out")
+      out = stub("string io out obj", :string => "raw out")
+      StringIO.stub(:new).and_return(out)
+      ANSI2HTML::Main.should_receive(:new).with("raw out", out)
+      io.read_all_out_as_html
+    end
+
+    it "should wrap ansi colored strings in spans which are classed based on the color" do
+      io = Octopusci::IO.new({ 'id' => 23 })
+      io.stub(:read_all_out).and_return("\e[31msome stuff\e[0m")
+      io.read_all_out_as_html.should == '<span class="red">some stuff</span>'    
+    end
+  end
+
+  describe "#read_all_log_as_html" do
+    it "should get all the log using read_all_log" do
+      io = Octopusci::IO.new({ 'id' => 23 })
+      io.should_receive(:read_all_log).and_return("\e[31msome stuff\e[0m")
+      io.read_all_log_as_html.should == '<span class="red">some stuff</span>'
+    end
+
+    it "should parse the log using ansi2html" do
+      io = Octopusci::IO.new({ 'id' => 23 })
+      io.stub(:read_all_log).and_return("raw out")
+      out = stub("string io out obj", :string => "raw out")
+      StringIO.stub(:new).and_return(out)
+      ANSI2HTML::Main.should_receive(:new).with("raw out", out)
+      io.read_all_log_as_html
+    end
+
+    it "should wrap ansi colored strings in spans which are classed based on the color" do
+      io = Octopusci::IO.new({ 'id' => 23 })
+      io.stub(:read_all_log).and_return("\e[31msome stuff\e[0m")
+      io.read_all_log_as_html.should == '<span class="red">some stuff</span>'
+    end
+  end
+
   describe "#open_log_for_writing" do
   end
 

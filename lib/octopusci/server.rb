@@ -48,14 +48,14 @@ module Octopusci
       protected!
       @job = Octopusci::JobStore.get(params[:job_id])
       content_type('text/plain')
-      return Octopusci::IO.new(@job).read_all_out
+      return Octopusci::IO.new(@job).read_all_out_as_html
     end
 
     get '/jobs/:job_id/silent_output' do
       protected!
       @job = Octopusci::JobStore.get(params[:job_id])
       content_type('text/plain')
-      return Octopusci::IO.new(@job).read_all_log
+      return Octopusci::IO.new(@job).read_all_log_as_html
     end
 
     get '/jobs/:job_id/status' do

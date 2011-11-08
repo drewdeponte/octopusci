@@ -17,10 +17,10 @@
   </div>
   <div class="job_content">
     Output:
-    <div class="output job_output" style="display: block;"><pre><code><%= Octopusci::IO.new(@job).read_all_out %></code></pre></div>
+    <div class="output job_output" style="display: block;"><pre><code><%= Octopusci::IO.new(@job).read_all_out_as_html %></code></pre></div>
   </div>
   <div class="job_content">
     Log:
-    <div class="silent_output job_output" style="display: block;"><pre><code><%= Octopusci::IO.new(@job).read_all_log %></code></pre></div>
+    <div class="silent_output job_output" style="display: block;"><pre><code><%= Octopusci::IO.new(@job).read_all_log_as_html %></code></pre></div>
   </div>
 </div>

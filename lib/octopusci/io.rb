@@ -1,3 +1,5 @@
+require 'ansi2html/main'
+
 module Octopusci
   class IO
     attr_accessor :job
@@ -24,6 +26,18 @@ module Octopusci
       else
         return ""
       end
+    end
+
+    def read_all_out_as_html
+      out = StringIO.new
+      ::ANSI2HTML::Main.new(read_all_out(), out)
+      return out.string
+    end
+
+    def read_all_log_as_html
+      out = StringIO.new
+      ::ANSI2HTML::Main.new(read_all_log(), out)
+      return out.string
     end
 
     def write_out(msg="", &block)
