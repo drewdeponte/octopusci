@@ -11,7 +11,7 @@ module Octopusci
     def read_all_out
       if File.exists?(abs_output_file_path)
         cont = ""
-        f = File.open(abs_output_file_path, 'r')
+        f = File.open(abs_output_file_path, 'r', :encoding => "BINARY")
         cont = f.read()
         f.close
         return cont
@@ -22,7 +22,10 @@ module Octopusci
 
     def read_all_log
       if File.exists?(abs_log_file_path)
-        return File.open(abs_log_file_path, 'r').read()
+        f = File.open(abs_log_file_path, 'r', :encoding => "BINARY")
+        cont = f.read()
+        f.close
+        return cont
       else
         return ""
       end

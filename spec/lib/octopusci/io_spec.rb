@@ -38,7 +38,7 @@ describe Octopusci::IO do
     end
 
     it "should return all the file content if the log file exists" do
-      file = stub('file', :read => 'file content')
+      file = stub('file', :read => 'file content', :close => 0)
       File.stub(:exists?).and_return(true)
       File.stub(:open).and_return(file)
       Octopusci::IO.new({ 'id' => 23 }).read_all_log.should == 'file content'
