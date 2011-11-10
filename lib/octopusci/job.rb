@@ -44,7 +44,7 @@ module Octopusci
         
         real_cmd_str = ""
         if (go_to_repo)
-          real_cmd_str += "cd #{repository_path} 2&>1 && "
+          real_cmd_str += "cd #{repository_path} 2>&1 && "
         end
         real_cmd_str += cmd_str
         in_f = ::IO.popen(real_cmd_str)
