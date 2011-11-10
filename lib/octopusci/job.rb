@@ -33,7 +33,7 @@ module Octopusci
       end
     end
 
-    def self.run_shell_cmd(cmd_str, output_to_log=false)
+    def self.run_shell_cmd(cmd_str, output_to_log=false, go_to_repo=true)
       horiz_line = "-"*30
       @io.write_raw_output(output_to_log) do |out_f|
         out_f << "\n\n#{@output_lead_in}Running: #{cmd_str}\n"
@@ -41,7 +41,13 @@ module Octopusci
         out_f << "\n"
         out_f.flush
       
-        in_f = ::IO.popen("cd #{repository_path} && #{cmd_str}")
+        
+        real_cmd_str = ""
+        if (go_to_repo)
+          real_cmd_str += "cd #{repository_path} 2&>1 && "
+        end
+        real_cmd_str += cmd_str
+        in_f = ::IO.popen(real_cmd_str)
         while(cur_line = in_f.gets) do
           out_f << "#{@output_lead_in}#{cur_line}"
           out_f.flush
@@ -53,8 +59,8 @@ module Octopusci
       return $?.exitstatus.to_i
     end
 
-    def self.run_shell_cmd!(cmd_str, output_to_log=false)
-      r = self.run_shell_cmd(cmd_str, output_to_log)
+    def self.run_shell_cmd!(cmd_str, output_to_log=false, go_to_repo=true)
+      r = self.run_shell_cmd(cmd_str, output_to_log, go_to_repo)
       if (r != 0)
         raise Octopusci::JobRunFailed.new("#{cmd_str} exited with non-zero return value (#{r})")
       else
@@ -107,12 +113,12 @@ module Octopusci
         if !Dir.exists?(workspace_path)
           FileUtils.mkdir_p(workspace_path)
         end
-        return run_shell_cmd("cd #{workspace_path} 2>&1 && git clone #{job_conf['repo_uri']} #{@job['repo_name']} 2>&1", true)
+        return run_shell_cmd("cd #{workspace_path} 2>&1 && git clone #{job_conf['repo_uri']} #{@job['repo_name']} 2>&1", true, false)
       end
     end
 
     def self.checkout_branch(job_conf)
-      return run_shell_cmd("cd #{repository_path} 2>&1 && git fetch --all -p 2>&1 && git checkout #{@job['branch_name']} 2>&1 && git pull -f origin #{@job['branch_name']}:#{@job['branch_name']} 2>&1", true)
+      return run_shell_cmd("cd #{repository_path} 2>&1 && git fetch --all -p 2>&1 && git checkout #{@job['branch_name']} 2>&1 && git pull -f origin #{@job['branch_name']}:#{@job['branch_name']} 2>&1", true, false)
     end
 
     def self.get_recip_email
