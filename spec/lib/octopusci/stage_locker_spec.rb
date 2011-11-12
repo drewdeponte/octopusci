@@ -17,6 +17,35 @@ describe "Octopusci::StageLocker" do
     end
   end
 
+  describe "#exists?" do
+    it "should check if the redis key exists for the stage locker" do
+      @mock_redis.should_receive(:exists).with('octopusci:stagelocker')    
+      Octopusci::StageLocker.exists?
+    end
+
+    it "should return fales if the stage locker key does not exists in redis" do
+      @mock_redis.stub(:exists).and_return(false)
+      Octopusci::StageLocker.exists?.should == false
+    end
+
+    it "should return true if the stage locker key exists in redis" do
+      @mock_redis.stub(:exists).and_return(true)
+      Octopusci::StageLocker.exists?.should == true
+    end
+  end
+
+  describe "#empty?" do
+    it "should return true if exists? returns false" do
+      Octopusci::StageLocker.stub(:exists?).and_return(false)
+      Octopusci::StageLocker.empty?.should == true
+    end
+
+    it "should return false if exists? returns true" do
+      Octopusci::StageLocker.stub(:exists?).and_return(true)
+      Octopusci::StageLocker.empty?.should == false
+    end
+  end
+
   describe "#clear" do
     it "should clear all of the stages out of the stage locker" do
       r = mock('redis')

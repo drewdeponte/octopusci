@@ -6,6 +6,14 @@ module Octopusci
       clear
       stages.each { |s| push(s) }
     end
+
+    def self.exists?
+      self.redis.exists('octopusci:stagelocker')
+    end
+
+    def self.empty?
+      !exists?
+    end
     
     def self.clear
       self.redis.del('octopusci:stagelocker')

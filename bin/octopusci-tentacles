@@ -28,22 +28,26 @@ opts = Trollop::with_standard_exception_handling(p) do
   o
 end
 
-# The StageLocker.load() method is called here not only to set things into
-# valid initial state. But, also in the case that octopusci-tentacles was
-# killed it nukes the potentially screwed up state the redis data is in and
-# initializes it the proper state based on the config.
-if Octopusci::Config.has_key?('stages')
-  Octopusci::StageLocker.load(Octopusci::Config['stages'])
+def start_or_restart
+  # The StageLocker.load() method is called here not only to set things into
+  # valid initial state. But, also in the case that octopusci-tentacles was
+  # killed it nukes the potentially screwed up state the redis data is in and
+  # initializes it the proper state based on the config.
+  if Octopusci::Config.has_key?('stages') && Octopusci::StageLocker.empty?
+    puts "Reseting stage locker and loading stages in from config."
+    Octopusci::StageLocker.load(Octopusci::Config['stages'])
+  end
+
+  Octopusci::WorkerLauncher.cleanup_existing_workers()
+  Octopusci::WorkerLauncher.launch()
 end
 
 cmd = ARGV.shift # get the subcommand
 case cmd
   when "start"
-    Octopusci::WorkerLauncher.cleanup_existing_workers()
-    Octopusci::WorkerLauncher.launch()
+    start_or_restart()
   when "restart"
-    Octopusci::WorkerLauncher.cleanup_existing_workers()
-    Octopusci::WorkerLauncher.launch()    
+    start_or_restart()
   when "stop"
     Octopusci::WorkerLauncher.cleanup_existing_workers()
   when "help"
