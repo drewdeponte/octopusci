@@ -22,6 +22,11 @@
         color: white;
         background-color: #333;
       }
+
+      .version {
+        font-size: 11px;
+        margin-right: 10px;
+      }
       
       #main_content_area {
         width: 960px;
@@ -161,7 +166,7 @@
   <body>
     <div id="header">
       <div id="logo">
-        Octopusci <% if @page_logo %> - <%= @page_logo %><% end %>
+        Octopusci <span class="version">v<%= Octopusci::Version %></span><% if @page_logo %>( <%= @page_logo %> )<% end %>
       </div>
       <div id="main_nav">
         <a href="/">Dashboard</a>
