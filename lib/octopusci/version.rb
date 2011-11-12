@@ -1,3 +1,3 @@
 module Octopusci
-  Version = VERSION = '0.3.5'
+  Version = VERSION = '0.3.6'
 end
