@@ -9,6 +9,7 @@ PATH
       resque
       sinatra
       time-ago-in-words
+      trollop
 
 GEM
   remote: http://rubygems.org/
@@ -95,6 +96,7 @@ GEM
     treetop (1.4.10)
       polyglot
       polyglot (>= 0.3.1)
+    trollop (1.16.2)
     vegas (0.1.8)
       rack (>= 1.0.0)
 

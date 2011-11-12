@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'multi_json'
   s.add_dependency 'time-ago-in-words'
   s.add_dependency 'ansi2html'
+  s.add_dependency 'trollop'
   
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'

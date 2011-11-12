@@ -1,26 +1,32 @@
 #!/usr/bin/env ruby
 
-def display_help
-  puts "Usage: octopusci-tentacles <command>"
-  puts "  Acceptable Commands:"
-  puts "    start - Cleanup existing workers and start new worker processes in the background"
-  puts "     stop - Signals workers to exit when current job is finished"
-  puts "  restart - Synonym for the 'start' command, just here for convenience"
-  puts "     help - Display this help"
-  puts ""
-  puts "  Example: octopusci-tentacles start"
-  puts ""
-end
-
-if !["start", "stop", "restart", "help"].include?(ARGV[0])
-  display_help()
-  exit 1
-end
-
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
 
 require 'rubygems'
 require 'octopusci'
+require 'trollop'
+
+SUB_COMMANDS = %w(start, restart, stop, help)
+
+p = Trollop::Parser.new do
+  version "Octopusci v#{Octopusci::Version} (c) Andrew De Ponte"
+  banner """Usage: octopusci-tentacles [-v|--version|-h|--help] <subcommand>
+  Acceptable SubCommands:
+      start - Cleanup existing workers and start new worker processes in the background
+       stop - Signals workers to exit when current job is finished
+    restart - Synonym for the 'start' command, just here for convenience
+       help - Display this help
+
+  Available Options:
+"""
+  stop_on SUB_COMMANDS
+end
+
+opts = Trollop::with_standard_exception_handling(p) do
+  o = p.parse ARGV
+  raise Trollop::HelpNeeded if ARGV.empty? # show help screen
+  o
+end
 
 # The StageLocker.load() method is called here not only to set things into
 # valid initial state. But, also in the case that octopusci-tentacles was
@@ -30,7 +36,8 @@ if Octopusci::Config.has_key?('stages')
   Octopusci::StageLocker.load(Octopusci::Config['stages'])
 end
 
-case ARGV[0]
+cmd = ARGV.shift # get the subcommand
+case cmd
   when "start"
     Octopusci::WorkerLauncher.cleanup_existing_workers()
     Octopusci::WorkerLauncher.launch()
@@ -40,5 +47,8 @@ case ARGV[0]
   when "stop"
     Octopusci::WorkerLauncher.cleanup_existing_workers()
   when "help"
-    display_help()
+    p.educate
+  else
+    p.die "unknown subcommand #{cmd.inspect}", nil
 end
+
