@@ -14,7 +14,7 @@ end
 
 opts = Trollop::options do
   version "Octopusci v#{Octopusci::Version} (c) Andrew De Ponte"
-  banner """Usage: octopusci-skel [-n|-v|--version|-h|--help] <subcommand>"""
+  banner """Usage: octopusci-skel [-n|-v|--version|-h|--help]"""
   opt :dry_run, "Don't actually do anything but describe what it would do", :short => "-n"
 end
 
