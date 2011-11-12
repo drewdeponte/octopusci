@@ -8,7 +8,7 @@ describe "Octopusci::Queueu" do
       @mock_redis.stub(:set)
       Resque.stub(:push)
       Octopusci::Helpers.stub(:gh_payload_to_job_attrs).and_return({})
-      Octopusci::Queue.stub(:lismember).and_return(false)
+      Octopusci::Queue.stub(:job_pending?).and_return(false)
       Octopusci::JobStore.should_receive(:prepend)
       Octopusci::Queue.enqueue('SomeTestJobKlass', 'repo-name', 'branch-name', github_payload, proj_info)
     end
@@ -21,7 +21,7 @@ describe "Octopusci::Queueu" do
       Octopusci::JobStore.stub(:prepend)
       Octopusci::Queue.stub(:redis).and_return(r)
       Octopusci::Helpers.stub(:gh_payload_to_job_attrs).and_return({})
-      Octopusci::Queue.stub(:lismember).and_return(false)
+      Octopusci::Queue.stub(:job_pending?).and_return(false)
       r.should_receive(:set)
       Octopusci::Queue.enqueue('SomeTestJobKlass', 'repo-name', 'branch-name', github_payload, proj_info)
     end
@@ -32,7 +32,7 @@ describe "Octopusci::Queueu" do
       Octopusci::JobStore.stub(:prepend)
       @mock_redis.stub(:set)
       Octopusci::Helpers.stub(:gh_payload_to_job_attrs).and_return({})
-      Octopusci::Queue.stub(:lismember).and_return(false)
+      Octopusci::Queue.stub(:job_pending?).and_return(false)
       Resque.should_receive(:push)
       Octopusci::Queue.enqueue('SomeTestJobKlass', 'repo-name', 'branch-name', github_payload, proj_info)
     end
@@ -42,7 +42,7 @@ describe "Octopusci::Queueu" do
       github_payload = { :some => 'github_payload' }
       r = mock('redis')
       Octopusci::JobStore.stub(:list_repo_branch).and_return([])
-      Octopusci::Queue.stub(:lismember).and_return(true)
+      Octopusci::Queue.stub(:job_pending?).and_return(true)
       Octopusci::Queue.stub(:redis).and_return(r)
       r.should_receive(:set).with(Octopusci::Queue.github_payload_key('repo-name', 'branch-name'), Resque::encode(github_payload))
       Octopusci::Queue.enqueue('SomeTestJobKlass', 'repo-name', 'branch-name', github_payload, proj_info)
@@ -52,7 +52,7 @@ describe "Octopusci::Queueu" do
       proj_info = { :some => 'proj_info' }
       github_payload = { :some => 'github_payload' }
       @mock_redis.stub(:set)
-      Octopusci::Queue.stub(:lismember).and_return(true)
+      Octopusci::Queue.stub(:job_pending?).and_return(true)
       Octopusci::JobStore.should_receive(:list_repo_branch).with('repo-name', 'branch-name', 0, 1).and_return([])
       Octopusci::Queue.enqueue('SomeTestJobKlass', 'repo-name', 'branch-name', github_payload, proj_info)      
     end
@@ -61,7 +61,7 @@ describe "Octopusci::Queueu" do
       proj_info = { :some => 'proj_info' }
       github_payload = { :some => 'github_payload' }
       @mock_redis.stub(:set)
-      Octopusci::Queue.stub(:lismember).and_return(true)
+      Octopusci::Queue.stub(:job_pending?).and_return(true)
       Octopusci::Helpers.stub(:gh_payload_to_job_attrs).and_return(github_payload)
       Octopusci::JobStore.stub(:list_repo_branch).and_return([ { 'id' => 23 }.merge(github_payload) ])
       Octopusci::JobStore.should_receive(:set).with(23, { 'id' => 23 }.merge(github_payload))
@@ -70,29 +70,29 @@ describe "Octopusci::Queueu" do
 
   end
 
-  describe "#lismember" do
+  describe "#job_pending?" do
     it "should get the size of the provided queue" do
       @mock_redis.stub(:lrange)
       Resque.should_receive(:size).with("test:queue").and_return(0)
-      Octopusci::Queue.lismember("test:queue", { :test => 'foo' })
+      Octopusci::Queue.job_pending?("test:queue", "test-proj-name", "test-branch-name")
     end
 
     it "should get the entire list of queued jobs" do
       Resque.stub(:size).and_return(2)
-      Resque.should_receive(:peek).with("test:queue", 0, 2)
-      Octopusci::Queue.lismember("test:queue", { :test => 'foo' })
+      Resque.should_receive(:peek).with("test:queue", 0, 2).and_return([])
+      Octopusci::Queue.job_pending?("test:queue", "test-proj-name", "test-branch-name")
     end
 
     it "should return true if the provided item exists in the queue identified by the provided queue name" do
       Resque.stub(:size).and_return(2)
-      Resque.stub(:peek).and_return([ { :test => 'foo' }, { :hoopty => 'bar' } ])
-      Octopusci::Queue.lismember("test:queue", { :hoopty => 'bar' }).should == true
+      Resque.stub(:peek).and_return([ { "args" => ["some-proj", "some-repo"] }, { "args" => ["test-proj-name", "test-branch-name"] } ])
+      Octopusci::Queue.job_pending?("test:queue", "test-proj-name", "test-branch-name").should == true
     end
 
     it "should return false if the provided item does NOT exist in the queue identified by the given queue name" do
       Resque.stub(:size).and_return(2)
-      Resque.stub(:peek).and_return([ { :test => 'foo' }, { :hoopty => 'bar' } ])
-      Octopusci::Queue.lismember("test:queue", { :jack => 'crack' }).should == false
+      Resque.stub(:peek).and_return([ { "args" => ["some-proj", "some-repo"] }, { "args" => ["some-other-proj-name", "some-other-branch-name"] } ])
+      Octopusci::Queue.job_pending?("test:queue", "test-proj-name", "test-branch-name").should == false
     end
   end
 

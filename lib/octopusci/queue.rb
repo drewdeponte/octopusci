@@ -3,31 +3,26 @@ require 'resque'
 module Octopusci
   module Queue
     def self.enqueue(job_klass, proj_name, branch_name, github_payload, job_conf)
-      resque_opts = { "class" => job_klass, "args" => [proj_name, branch_name] }
       gh_pl_key = github_payload_key(proj_name, branch_name)
 
-      if lismember('octopusci:commit', resque_opts)
+      if job_pending?('octopusci:commit', proj_name, branch_name)
         self.redis.set(gh_pl_key, Resque::encode(github_payload))
 
         job = Octopusci::JobStore.list_repo_branch(proj_name, branch_name, 0, 1).first
         if job
           Octopusci::JobStore.set(job['id'], job.merge(Octopusci::Helpers.gh_payload_to_job_attrs(github_payload)))
-        end        
+        end
       else
         # Create a new job for this project with the appropriate data
         job_id = Octopusci::JobStore.prepend(Octopusci::Helpers.gh_payload_to_job_attrs(github_payload).merge('status' => 'pending'))
-        resque_opts["args"] << job_id
-        resque_opts["args"] << job_conf
         self.redis.set(gh_pl_key, Resque::encode(github_payload))
-        Resque.push('octopusci:commit', resque_opts)
+        Resque.push('octopusci:commit', { "class" => job_klass, "args" => [proj_name, branch_name, job_id, job_conf] })
       end
     end
 
-    def self.lismember(queue, item)
+    def self.job_pending?(queue, proj_name, branch_name)
       size = Resque.size(queue)
-      [Resque.peek(queue, 0, size)].flatten.any? { |v|
-        v == item
-      }
+      return [Resque.peek(queue, 0, size)].flatten.any? { |v| v["args"][0] == proj_name && v["args"][1] == branch_name }
     end
     
     def self.github_payload(project_name, branch_name)
