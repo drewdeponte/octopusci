@@ -1,0 +1,18 @@
+---
+layout: default
+---
+<article>
+  <header>
+    <h1 class='entry-title' style="display: inline-block;">
+      {{ page.title }}
+    </h1> <time datetime='{{ page.date | date_to_utc | date:"%Y-%m-%dT%H:%M:00Z" }}' class='entry-time'>{{ page.date | date:"%B %d, %Y" }}</time>
+    
+  </header>
+  
+  <section class='body'>
+      {{ content }}
+  </section>
+
+  <footer>
+  </footer>
+</article>

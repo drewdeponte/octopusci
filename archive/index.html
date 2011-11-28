@@ -1,0 +1,14 @@
+---
+layout: default
+title: Archive
+---
+<h1 style="margin-left: 20px;">Blog Posts</h1>
+<article>
+	<section>
+		<ul class="posts">
+		  {% for post in site.posts %}
+		    <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
+		  {% endfor %}
+		</ul>
+	</section>
+</arcticle>

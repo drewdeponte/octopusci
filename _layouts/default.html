@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta name="author" content="Andrew De Ponte" />
+  <title>Octopus-CI : {{ page.title }}</title>
+
+  <style type="text/css">
+    body {
+      font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+      font-weight: 300;
+      font-size: 16px;
+      margin: 0;
+      background-color: #F4F4F4;
+      color: #7A7A7A;
+      background-image: url(/images/noise.gif);
+      padding: 0;
+      margin: 0;
+      min-width: 960px;
+    }
+
+    #header {
+      width: 100%;
+      color: white;
+      background-color: #333;
+      line-height: 1.8em;
+    }
+
+    #logo {
+      margin-top: 5px;
+      margin-left: 10px;
+      float: left;
+    }
+
+    #main_nav {
+      font-weight: bold;
+      font-size: 11px;
+      float: right;
+      width: 500px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      margin-right: 10px;
+      padding-left: 10px;
+      padding-right: 10px;
+      background-color: white;
+      border-radius: 8px;
+    }
+
+    #main_content_area {
+      width: 960px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 40px;
+      margin-bottom: 40px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      background-color: white;
+    }
+
+    article {
+      border: 1px dotted #E6E6E6;
+      background-color: #F9F9F9;
+      margin: 20px;
+    }
+
+    article > header {
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+
+    article p {
+      margin: 10px;
+    }
+
+    article time {
+      color: #999;
+      font-size: 12px;
+    }
+
+    article h1, article h2, article h3, article h4 {
+      color: #333;
+    }
+
+    article > section {
+      margin: 10px;
+    }
+
+    a {
+      color: #333;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="header">
+    <div id="logo">
+      Octopus-CI : {{ page.title }}
+    </div>
+
+    <div id="main_nav">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="http://github.com/cyphactor/octopusci/issues" target="_blank">Issues</a>
+      <a href="http://github.com/cyphactor/octopusci/wiki" target="_blank">Wiki</a>
+      <a href="/sponsors">Sponsors</a>
+      <a href="/archive">Archive</a>
+    </div>
+    <div style="clear: both;"></div>
+  </div>
+
+  <div id="main_content_area">
+    <div id="jobs">
+        {{ content }}
+    </div>
+  </div>
+
+  <a href="https://github.com/cyphactor/octopusci"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+</body>
+</html>
