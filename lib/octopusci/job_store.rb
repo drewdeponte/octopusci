@@ -1,3 +1,6 @@
+require 'resque'
+require 'yaml'
+
 module Octopusci
   class JobStore
     def self.prepend(job)
