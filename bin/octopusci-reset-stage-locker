@@ -3,7 +3,7 @@
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
 
 require 'rubygems'
-require 'octopusci'
+require 'octopusci/version'
 require 'trollop'
 
 opts = Trollop::options do
@@ -13,10 +13,12 @@ opts = Trollop::options do
 end
 
 if opts[:reset]
+	puts "Reseting the Octopusci StageLocker, please wait..."
+	require 'octopusci'
   Octopusci::StageLocker.load(Octopusci::Config['stages'])
-  puts "Reset the Octopusci StageLocker"
+  puts "Succesfully Reset the Octopusci StageLocker"
 else
-	puts """THIS IS A WARNING. THIS IS A DESTRUCTIVE COMMAND!
+	puts %Q{THIS IS A WARNING. THIS IS A DESTRUCTIVE COMMAND!
 
 This command is designed to allow you to reset/clear out the Octopusci StageLocker
 and repopulate it with the stages defined in the config. If you run this command
@@ -31,10 +33,10 @@ setup.
 
 WARNING: You should not run this command until all job processes have completed.
 Running 'octopusci-tentacles stop' only requests that the tentacles stop running
-future jobs and the kill themselves off once they are done with any current jobs
-they are running. So, be sure you wait for the currently running jobs to exist
-before you run this command or you could end up with multiple jobs running on a
-single stage.
+future jobs and that they kill themselves off once they are done with any current
+jobs they are running. So, be sure you wait for the currently running jobs to
+exit before you run this command or you could end up with multiple jobs running
+on a single stage.
 
 To go forward and actually reset the Octopusci StageLocker simply run the command
 using the following example.
@@ -42,6 +44,6 @@ using the following example.
 Example:
 octopusci-reset-stage-locker -r
 
-"""
+}
 
 end
