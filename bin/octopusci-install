@@ -15,18 +15,61 @@ module Octopusci
 		end
 
 		def install
-			# check if the specified account name exists
-			if account_exists?(@opts[:account]) # exit informing the user to pick a new one
-				warning("The \"#{@opts[:account]}\" user account already exists.")
-			else
-				create_account(@opts[:account])
-			end
+			# Create user account for octopusci to use.
+			warn(account_exists?(@opts[:account]), "The \"#{@opts[:account]}\" user account already exists.") {
+				delete_account(@opts[:account])
+			}
+			create_account(@opts[:account], @opts[:shell], @opts[:uid], @opts[:gid])
+			puts "Created the \"#{@opts[:account]}\" account."
+
+			# Do the same stuff octopusci-skel currently does but also include the user and group that the octopusci-tentacles should run as
+			# in the config.yml so that when octopusci-tentacles launches as root at boot it can properly switch to the proper uid and guid
+
+			# Make sure that there exists a .ssh/config in the account home directory with the proper permissions and that config has the
+			# option that makes it so that when sshing to github it doesn't make you manually accept the server host key.
 		end
 
 		private
 
-		def create_account(account_name)
-			not_implemented
+		def create_account(account_name, shell, uid, gid)
+			if on_mac?
+				# Create the user entry.
+				`dscl . -create /Users/#{account_name}`
+
+				# Set the users shell.
+				`dscl . -create /Users/#{account_name} UserShell ${shell}`
+
+				# Set the users full name.
+				`dscl . -create /Users/#{account_name} RealName "#{account_name}"`
+
+				# Associate the user with a unique id.
+				`dscl . -create /Users/#{account_name} UniqueID #{uid}`
+
+				# Associate the user with a primary gorup id.
+				`dscl . -create /Users/#{account_name} PrimaryGroupID #{gid}`
+
+				# Create the users home directory.
+				`dscl . -create /Users/#{account_name} NFSHomeDirectory /Users/#{account_name}`
+
+				# Create the home directory and set the ownership properly.
+				`mkdir -p /Users/#{account_name}`
+				`chown -R #{uid}:#{gid} /Users/#{account_name}`
+
+				# Set the users password.
+				puts "Please enter the password for the \"#{account_name}\" account."
+				`passwd ${account_name}`
+			else
+				not_implemented
+			end
+		end
+
+		def delete_account(account_name)
+			if on_mac?
+				# Remove the directory services record
+				`dscl . -delete /Users/#{account_name}`
+			else
+				not_implemented
+			end
 		end
 
 		# Returns a boolean identifying if an account with the given name already exists or not
@@ -44,12 +87,15 @@ module Octopusci
 			return RUBY_PLATFORM.downcase.include?("darwin") ? true : false
 		end
 
-		def warning(msg)
-			if @opts[:force]
-				puts "Warning: (Bypassed by -f) #{msg}"
-			else
-				puts "Warning: #{msg}"
-				exit 2
+		def warn(warn, msg)
+			if warn
+				if @opts[:force]
+					puts "Warning: (Bypassed by -f) #{msg}"
+					yield
+				else
+					puts "Warning: #{msg}"
+					exit 2
+				end
 			end
 		end
 
@@ -71,6 +117,9 @@ opts = Trollop::options do
   opt :install, "Actually install Octopusci.", :short => "-i", :default => false
   opt :force, "Force the install to continue ignoring warnings", :short => "-f", :default => false
   opt :account, "Account name to create for the Octopusci install", :short => "-a", :default => "octopusci"
+  opt :uid, "User id to assign to the user account that is going to be created", :short => "-u", :default => "498"
+  opt :gid, "Primary group id to assign to the user account that is going to be created", :short => "-g", :default => "1000"
+  opt :shell, "Shell that used by the account that is going to be created", :short => "-s", :default => "/bin/bash"
 end
 
 if Process.uid != 0
