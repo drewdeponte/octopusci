@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.version     = Octopusci::VERSION
   s.summary     = %q{A continuous integration application using Sinatra.}
-  s.description = %q{A multi-branch Continous Integration server that integrates with GitHub}
+  s.description = %q{A multi-branch Continuous Integration server that integrates with GitHub}
   s.authors     = ['Andrew De Ponte', 'Aldo Sarmiento']
   s.email       = ['cyphactor@gmail.com', 'sarmiena@gmail.com']
   s.homepage    = 'https://github.com/cyphactor/octopusci'
