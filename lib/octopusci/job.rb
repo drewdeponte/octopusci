@@ -118,7 +118,7 @@ module Octopusci
     end
 
     def self.checkout_branch(job_conf)
-      return run_shell_cmd("cd #{repository_path} 2>&1 && git fetch --all -p 2>&1 && git checkout #{@job['branch_name']} 2>&1 && git pull -f origin #{@job['branch_name']}:#{@job['branch_name']} 2>&1", true, false)
+      return run_shell_cmd("cd #{repository_path} 2>&1 && git fetch --all -p 2>&1 && git reset --hard && git checkout #{@job['branch_name']} 2>&1 && git pull -f origin #{@job['branch_name']}:#{@job['branch_name']} 2>&1", true, false)
     end
 
     def self.get_recip_email

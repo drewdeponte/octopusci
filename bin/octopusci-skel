@@ -57,7 +57,7 @@ class OctopusciRSpecBuildLocal < Octopusci::Job
   def self.run(job_rec)
     context "RSpec Tests (commit)" do
       run_shell_cmd!("bundle install", true)
-      run_shell_cmd!("STAGE=\#{job_rec['stage']} bundle exec rspec spec 2>&1", true)
+      run_shell_cmd!("STAGE=\#{job_rec['stage']} bundle exec rspec spec 2>&1")
     end
   end
 end
