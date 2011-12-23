@@ -1,0 +1,110 @@
+body {
+  font-family: "proxima-nova-1", "proxima-nova-2", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  text-transform: none;
+  text-decoration: none;
+  margin: 0;
+  background-color: #F4F4F4;
+  color: #7A7A7A;
+  background-image: url(/images/noise.gif);
+  padding: 0;
+  margin: 0;
+  min-width: 960px;
+}
+
+h1 {
+  font-weight: 300;
+  font-size: 48px;
+  line-height: 36px;
+}
+
+#header {
+  width: 100%;
+  color: white;
+  background-color: #333;
+  line-height: 1.8em;
+}
+
+#logo {
+  margin-top: 5px;
+  margin-left: 10px;
+  float: left;
+}
+
+#main_nav {
+  font-weight: bold;
+  font-size: 11px;
+  float: right;
+  width: 500px;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  margin-right: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: white;
+  border-radius: 8px;
+}
+
+#main_content_area {
+  width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: white;
+}
+
+article {
+  border: 1px dotted #E6E6E6;
+  background-color: #F9F9F9;
+  margin: 20px;
+  padding: 20px;
+}
+
+
+article h1, article h2, article h3, article h4 {
+  color: #333;
+}
+
+a {
+  color: #333;
+}
+
+.entry-title {
+  font-weight: 300;
+  font-size: 36px;
+  line-height: 38px;
+  text-decoration: none;
+}
+
+.entry-title a {
+  text-decoration: none;
+}
+
+article section {
+  font: 400 15px/24px "proxima-nova-1", "proxima-nova-2", "Helvetica Neue", Helvetica, sans-serif;
+  color: #444;
+}
+
+.entry-time {
+  color: #999;
+  font-size: 12px;
+}
+
+.octopusci_avatar {
+  height: 49px;
+  width: 49px;
+  margin: 5px;
+  margin-top: 0px;
+  margin-left: -5px;
+  float: left;
+  display: block;
+}
+
+.octopusci_logo_label {
+  margin-top: 11px;
+  float: left;
+}

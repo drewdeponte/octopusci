@@ -5,154 +5,49 @@
   <meta name="author" content="Andrew De Ponte" />
   <title>Octopusci : {{ page.title }}</title>
   <link href="/atom.xml" rel="alternate" title="Octopusci" type="application/atom+xml" />
-
-  <style type="text/css">
-    body {
-      font-family: "proxima-nova-1", "proxima-nova-2", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-      font-weight: 300;
-      font-size: 16px;
-      text-transform: none;
-      text-decoration: none;
-      margin: 0;
-      background-color: #F4F4F4;
-      color: #7A7A7A;
-      background-image: url(/images/noise.gif);
-      padding: 0;
-      margin: 0;
-      min-width: 960px;
-    }
-
-    h1 {
-      font-weight: 300;
-      font-size: 48px;
-      line-height: 36px;
-    }
-
-    #header {
-      width: 100%;
-      color: white;
-      background-color: #333;
-      line-height: 1.8em;
-    }
-
-    #logo {
-      margin-top: 5px;
-      margin-left: 10px;
-      float: left;
-    }
-
-    #main_nav {
-      font-weight: bold;
-      font-size: 11px;
-      float: right;
-      width: 500px;
-      margin-top: 15px;
-      margin-bottom: 5px;
-      margin-right: 10px;
-      padding-left: 10px;
-      padding-right: 10px;
-      background-color: white;
-      border-radius: 8px;
-    }
-
-    #main_content_area {
-      width: 960px;
-      margin-left: auto;
-      margin-right: auto;
-      margin-top: 40px;
-      margin-bottom: 40px;
-      padding-top: 10px;
-      padding-bottom: 10px;
-      background-color: white;
-    }
-
-    article {
-      border: 1px dotted #E6E6E6;
-      background-color: #F9F9F9;
-      margin: 20px;
-      padding: 20px;
-    }
-
-
-    article h1, article h2, article h3, article h4 {
-      color: #333;
-    }
-
-    a {
-      color: #333;
-    }
-
-    .entry-title {
-      font-weight: 300;
-      font-size: 36px;
-      line-height: 38px;
-      text-decoration: none;
-    }
-
-    .entry-title a {
-      text-decoration: none;
-    }
-
-    article section {
-      font: 400 15px/24px "proxima-nova-1", "proxima-nova-2", "Helvetica Neue", Helvetica, sans-serif;
-      color: #444;
-    }
-
-    .entry-time {
-      color: #999;
-      font-size: 12px;
-    }
-
-    .octopusci_avatar {
-      height: 49px;
-      width: 49px;
-      margin: 5px;
-      margin-top: 0px;
-      margin-left: -5px;
-      float: left;
-      display: block;
-    }
-
-    .octopusci_logo_label {
-      margin-top: 11px;
-      float: left;
-    }
-  </style>
+  <link rel="stylesheet" href="../stylesheets/foundation.css">
+  <link rel="stylesheet" href="../stylesheets/ie.css">
+  <link rel="stylesheet" href="../stylesheets/app.css">
 </head>
 
 <body>
-  <div id="header">
-    <div id="logo">
-      <img src="/images/octopus_avatar.png" class="octopusci_avatar" />
-      <div class="octopusci_logo_label">Octopusci : {{ page.title }}</div>
+  <div id="header" class="container">
+    <div  class="row">
+      <div id="logo">
+        <img src="/images/octopus_avatar.png" class="octopusci_avatar" />
+        <div class="octopusci_logo_label">Octopusci : {{ page.title }}</div>
+        <div style="clear: both;"></div>
+      </div>
+
+      <div id="main_nav" class="hide-on-phones">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="https://github.com/cyphactor/octopusci/issues" target="_blank">Issues</a>
+        <a href="https://github.com/cyphactor/octopusci/wiki" target="_blank">Wiki</a>
+        <a href="/sponsors">Sponsors</a>
+        <a href="/archive">Archive</a>
+      </div>
       <div style="clear: both;"></div>
     </div>
-
-    <div id="main_nav">
-      <a href="/">Home</a>
-      <a href="/about">About</a>
-      <a href="http://github.com/cyphactor/octopusci/issues" target="_blank">Issues</a>
-      <a href="http://github.com/cyphactor/octopusci/wiki" target="_blank">Wiki</a>
-      <a href="/sponsors">Sponsors</a>
-      <a href="/archive">Archive</a>
-    </div>
-    <div style="clear: both;"></div>
   </div>
-
-  <div id="social_connectors" style="padding: 5px;">
-    <div>
-      <a href="/atom.xml"><img src="/images/feed-icon-28x28.png" /></a>
-      <a href="https://twitter.com/octopusci" class="twitter-follow-button" data-show-count="false" data-lang="en" data-size="large">Follow @octopusci</a>
-      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  <div class="container">
+    <div class="row">
+      <div id="social_connectors" style="padding: 5px;">
+        <div>
+          <a href="/atom.xml"><img src="/images/feed-icon-28x28.png" /></a>
+          <a href="https://twitter.com/octopusci" class="twitter-follow-button" data-show-count="false" data-lang="en" data-size="large">Follow @octopusci</a>
+          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+        </div>
+      </div>
+    </div>
+    <div id="main_content_area" class="row">
+      <div id="jobs">
+          {{ content }}
+      </div>
     </div>
   </div>
 
-  <div id="main_content_area">
-    <div id="jobs">
-        {{ content }}
-    </div>
-  </div>
 
-  <a href="https://github.com/cyphactor/octopusci"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+  <a href="https://github.com/cyphactor/octopusci" class="hide-on-phones"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
 </body>
 </html>
