@@ -3,13 +3,15 @@ layout: default
 ---
 <article>
   <header>
-    <h1 class='entry-title' style="display: inline-block;">
-      {{ page.title }}
-    </h1> <time datetime='{{ page.date | date_to_utc | date:"%Y-%m-%dT%H:%M:00Z" }}' class='entry-time'>{{ page.date | date:"%B %d, %Y" }}</time>
-    
+    <h2 class='entry-title'>{{ page.title }}</h2>
+    <div>
+      <time datetime='{{ page.date | date_to_utc | date:"%Y-%m-%dT%H:%M:00Z" }}' class='entry-time'>{{ page.date | date:"%B %d, %Y" }}</time>
+      <span style="color: black;">by</span>
+      <a href="http://github.com/cyphactor">@cyphactor</a>
+    </div>
   </header>
   
-  <section class='body'>
+  <section class='entry-body'>
       {{ content }}
   </section>
 
@@ -18,8 +20,6 @@ layout: default
     <script type="text/javascript">
         /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
         var disqus_shortname = 'octopusci'; // required: replace example with your forum shortname
-        var disqus_url = '{{ page.url }}';
-        var disqus_identifier = '{{ page.id }}';
         //var disqus_developer = 1; // developer mode is on
 
         /* * * DON'T EDIT BELOW THIS LINE * * */

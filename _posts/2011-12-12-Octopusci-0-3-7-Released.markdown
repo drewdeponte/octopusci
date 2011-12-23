@@ -17,5 +17,3 @@ Some of the features/bug fixes included in this release are listed below.
 
 As always there is more dev work continuing so follow us on twitter (@octopusci) or subscribe to
 our Atom feed for up to date info on our releases.
-
-Enjoy, @cyphactor
