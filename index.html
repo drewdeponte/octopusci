@@ -3,6 +3,6 @@ layout: default
 title: Home
 ---
 <h1 style="margin-left: 20px;">Latest News</h1>
-{% for post in site.posts limit:1 %}
+{% for post in site.posts limit:10 %}
 {% include post.html %}
 {% endfor %}
