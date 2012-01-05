@@ -4,7 +4,7 @@ title: Octopusci v0.3.8 Released
 tags: [code]
 ---
 
-Woot woot. We just released the v0.3.8 of Octopusci. This release includes two pretty imporantant
+Woot woot. We just released the v0.3.8 of Octopusci. This release includes a few pretty imporantant
 changes.
 
  * octopusci-tentacles now runs as a non-root user (specified in config general section under key tentacles_user)
