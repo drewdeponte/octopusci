@@ -27,10 +27,21 @@ module Octopusci
 
       if Octopusci::Config['general']['tentacles_user'] != nil
         require 'etc'
-        chosen_uid = Etc.getpwnam(Octopusci::Config['general']['tentacles_user']).uid
-        if chosen_uid
-          Process.uid = chosen_uid
-          Process.euid = chosen_uid
+        chosen_user = Etc.getpwnam(Octopusci::Config['general']['tentacles_user'])
+        if chosen_user
+          # Switch the effective and real uid to the specified user
+          Process.uid = chosen_user.uid
+          Process.euid = chosen_user.uid
+
+          # Set the USER, HOME, and SHELL environment variables to those found in /etc/passwd for the specified user.
+          # This is important for some applications/scripts like RVM so that they can find things relative to the users home directory.
+          ENV['USER'] = chosen_user.name
+          ENV['SHELL'] = chosen_user.shell
+          ENV['HOME'] = chosen_user.dir
+
+          # Set the OCTOPUSCI environment variable applications to true so that programs instantiated by ocotpusci jobs could determine if
+          # they are being run by octopusci or not.
+          ENV['OCTOPUSCI'] = 'true'
         end
       end
 
