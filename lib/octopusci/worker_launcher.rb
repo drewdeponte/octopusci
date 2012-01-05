@@ -25,6 +25,15 @@ module Octopusci
       # and returns the new connection.
       Resque.redis.quit
 
+      if Octopusci::Config['general']['tentacles_user'] != nil
+        require 'etc'
+        chosen_uid = Etc.getpwnam(Octopusci::Config['general']['tentacles_user']).uid
+        if chosen_uid
+          Process.uid = chosen_uid
+          Process.euid = chosen_uid
+        end
+      end
+
       worker_pids = []
       
       Octopusci::Config['stages'].size.times do
