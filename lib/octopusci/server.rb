@@ -37,6 +37,24 @@ module Octopusci
       @jobs = Octopusci::JobStore.list_repo_branch(params[:repo_name], params[:branch_name], 0, 20)
       erb :index
     end
+
+    get '/defcon' do
+      protected!
+
+      @repos = []
+      5.times do 
+        @repos << {:name => 'octopusci', :branch => 'master'}
+      end
+
+      erb :defcon
+    end
+
+    get '/:repo_name/:branch_name/status' do
+      protected!
+      job = Octopusci::JobStore.list_repo_branch(params[:repo_name], params[:branch_name], 0, 1).first
+
+      return {:status => job['status']}.to_json
+    end
     
     get '/jobs/:job_id' do
       protected!
