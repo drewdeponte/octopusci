@@ -41,6 +41,7 @@ module Octopusci
 
     get '/defcon' do
       protected!
+      @page_logo = "Defcon"
       @hide_job_status_key = true
 
       repo_store_list = Octopusci::RepoStore.get_all
