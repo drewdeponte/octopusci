@@ -108,6 +108,15 @@ describe Octopusci::Job do
     end
   end
 
+  describe "self.repository_path" do
+    it "should concatenate the project owner and repo name" do
+      class SomeJob < Octopusci::Job; end
+      SomeJob.instance_variable_set(:@job, {'repo_name' => 'repo', 'repo_owner_name' => 'owner'})
+      SomeJob.stub(:workspace_path).and_return('/foo')
+      SomeJob.repository_path.should == "/foo/repo-owner"
+    end
+  end
+
   describe "self.run_shell_cmd" do
 
   end

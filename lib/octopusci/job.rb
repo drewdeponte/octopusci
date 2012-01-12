@@ -103,7 +103,7 @@ module Octopusci
     end
 
     def self.repository_path
-      return "#{workspace_path}/#{@job['repo_name']}"
+      return "#{workspace_path}/#{@job['repo_name']}-#{@job['repo_owner_name']}"
     end
 
     def self.clone_code(job_conf)
@@ -113,7 +113,7 @@ module Octopusci
         if !Dir.exists?(workspace_path)
           FileUtils.mkdir_p(workspace_path)
         end
-        return run_shell_cmd("cd #{workspace_path} 2>&1 && git clone #{job_conf['repo_uri']} #{@job['repo_name']} 2>&1", true, false)
+        return run_shell_cmd("cd #{workspace_path} 2>&1 && git clone #{job_conf['repo_uri']} #{@job['repo_name']}-#{job_conf['owner']} 2>&1", true, false)
       end
     end
 
