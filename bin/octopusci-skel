@@ -30,6 +30,7 @@ general:
   jobs_path: "/etc/octopusci/jobs"
   workspace_base_path: "#{WORKSPACE_BASE_PATH}"
   base_url: "http://localhost:9998"
+  tentactles_user: "octopusci"
 
 http_basic:
   username: admin
