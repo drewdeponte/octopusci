@@ -43,7 +43,6 @@ module Octopusci
       protected!
       @hide_job_status_key = true
 
-      Octopusci::RepoStore.set('octopusci', 'cyphactor')
       repo_store_list = Octopusci::RepoStore.get_all
       @repos = []
       repo_store_list.each do |repo_info|
