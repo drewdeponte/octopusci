@@ -46,7 +46,7 @@ GEM
       guard (>= 0.8.4)
     hike (1.2.1)
     i18n (0.6.0)
-    json (1.6.4)
+    json (1.6.3)
     mail (2.3.0)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -59,7 +59,7 @@ GEM
       rack (>= 0.4)
     rack-mount (0.8.3)
       rack (>= 1.0.0)
-    rack-protection (1.2.0)
+    rack-protection (1.1.4)
       rack
     rack-test (0.6.1)
       rack (>= 1.0)
