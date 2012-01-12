@@ -1,17 +1,69 @@
-<div class="job_summary">
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function() {
 
-  <div class="job_header">
-    <div class="job_title">
-      qqq
-    </div>
-    <div class="created_on">
-      bbb
-    </div>
-    <div style="clear: both;"></div>
-  </div>
-  <div class="job_content">
-    ccc
-  </div>
+    var has_failed = false;
 
+    function update_status() {
+      has_failed = false;
+
+      $('.repo').each(function () {
+        var repo_div = $(this);
+        $.get(repo_div.attr('data-status-url'), function(data){
+          var status_indicator = repo_div.find('.status');
+          status_indicator.removeClass('pending failed successful')
+          status_indicator.addClass(data.status)
+
+          if(data.status == "failed") {
+            has_failed = true;
+          }
+        });
+      });
+    }
+    update_status();
+
+    $(document).ajaxStop(function(){
+      if(has_failed) {
+        $('body').css('background-color', '#990000');
+        $('body').css('background-image', 'none');
+      }
+      else {
+        $('body').css('background-color', 'white');
+        $('body').css('background-image', 'url(/images/noise.gif)');
+      }
+    });
+
+    var t = setInterval(function() {
+      update_status();
+    }, 5000);
+
+  });
+</script>
+
+<div id="repos">
+  <% @repos.each do |repo| %>
+
+    <div class="repo" data-status-url="<%= "/#{repo[:owner]}/#{repo[:name]}/#{repo[:branch]}/status" %>">
+      <div class="repo_summary">
+        <div class="repo_header">
+          <div class="repo_title">
+            <div style="float: left;">
+              <span class="status pending"></span>
+              <a href="https://github.com/<%= repo[:owner] %>"><%= repo[:owner] %></a> 
+              / <a href="https://github.com/<%= repo[:owner] %>/<%= repo[:name] %>"><%= repo[:name] %></a> 
+              / <a href="/octopusci/<%= repo[:name] %>/jobs"><%= repo[:branch] %></a>
+            </div>
+            <div style="clear: both;"></div>
+          </div>
+
+          <div class="created_on">
+          </div>
+
+          <div style="clear: both;"></div>
+        </div>
+        
+      </div>      
+    </div>
+
+  <% end %>
 </div>
 

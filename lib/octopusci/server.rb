@@ -40,19 +40,27 @@ module Octopusci
 
     get '/defcon' do
       protected!
-
+      @hide_job_status_key = true
+      
       @repos = []
       5.times do 
-        @repos << {:name => 'octopusci', :branch => 'master'}
+        @repos << {
+          :owner => 'cyphactor', 
+          :name => 'octopusci', 
+          :branch => 'master'
+        }
       end
 
       erb :defcon
     end
 
-    get '/:repo_name/:branch_name/status' do
+    get '/:owner_name/:repo_name/:branch_name/status' do
       protected!
       job = Octopusci::JobStore.list_repo_branch(params[:repo_name], params[:branch_name], 0, 1).first
 
+      content_type :json
+
+      job['status'] = "failed"# if Random.rand(10) < 2
       return {:status => job['status']}.to_json
     end
     
