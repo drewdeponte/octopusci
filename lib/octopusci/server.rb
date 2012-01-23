@@ -32,10 +32,10 @@ module Octopusci
       erb :index
     end
 
-    get '/:repo_name/:branch_name/jobs' do
+    get '/:owner/:repo_name/:branch_name/jobs' do
       protected!
       @page_logo = "#{params[:repo_name]} / #{params[:branch_name]}"
-      @jobs = Octopusci::JobStore.list_repo_branch(params[:repo_name], params[:branch_name], 0, 20)
+      @jobs = Octopusci::JobStore.list_repo_branch(params[:owner], params[:repo_name], params[:branch_name], 0, 20)
       erb :index
     end
 
