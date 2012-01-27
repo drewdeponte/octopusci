@@ -55,7 +55,7 @@ module Octopusci
 
     get '/:owner_name/:repo_name/:branch_name/status' do
       protected!
-      job = Octopusci::JobStore.list_repo_branch(params[:repo_name], params[:branch_name], 0, 1).first
+      job = Octopusci::JobStore.list_repo_branch(params[:owner_name], params[:repo_name], params[:branch_name], 0, 1).first
 
       content_type :json
       return {:status => job['status']}.to_json
