@@ -3,7 +3,7 @@ require 'yaml'
 
 module Octopusci
   class RepoStore
-    def self.set(repo_name, owner)
+    def self.add(repo_name, owner)
       repo_info = {
         :owner => owner,
         :name => repo_name,
