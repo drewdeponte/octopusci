@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    octopusci (0.3.8)
+    octopusci (0.3.9)
       actionmailer
       ansi2html
       json

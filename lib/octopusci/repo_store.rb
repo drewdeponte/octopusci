@@ -10,7 +10,7 @@ module Octopusci
         :branch => 'master'
       }
 
-      key = "octopusci:repolist:#{repo_name}-#{owner}"
+      key = "octopusci:repolist:#{owner}-#{repo_name}"
       redis.sadd("octopusci:repolist", key)
       redis.set(key, YAML.dump(repo_info))
     end
