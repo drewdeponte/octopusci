@@ -7,7 +7,7 @@ module Octopusci
       job_id = redis.incr('octopusci:job_count')
       self.set(job_id, job.merge({ 'id' => job_id }))
       redis.lpush("octopusci:jobs", job_id)
-      redis.lpush("octopusci:#{job['repo_name']}:#{job['ref'].split('/').last}:jobs", job_id)
+      redis.lpush("octopusci:#{job['repo_owner_name']}-#{job['repo_name']}:#{job['ref'].split('/').last}:jobs", job_id)
       return job_id
     end
 
@@ -28,7 +28,7 @@ module Octopusci
     end
 
     def self.repo_branch_size(owner, repo_name, branch_name)
-      redis.llen("octopusci:#{repo_name}:#{branch_name}:jobs")
+      redis.llen("octopusci:#{owner}-#{repo_name}:#{branch_name}:jobs")
     end
 
     def self.list_job_ids(start_idx, num_jobs)
@@ -50,7 +50,7 @@ module Octopusci
       if (end_idx - start_idx < num_jobs)
         range_idx = end_idx
       end
-      redis.lrange("octopusci:#{repo_name}:#{branch_name}:jobs", 0, range_idx)
+      redis.lrange("octopusci:#{owner}-#{repo_name}:#{branch_name}:jobs", 0, range_idx)
     end
 
     def self.list(start_idx, num_jobs)
