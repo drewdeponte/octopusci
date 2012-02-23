@@ -23,6 +23,7 @@ describe "Octopusci::Server" do
     it "should enqueue a job if the request is for a managed project" do
       test_proj_info = { 'name' => 'temp_pusc_test', 'owner' => 'cyphactor', 'job_klass' => 'MyTestJob' }
       Octopusci::Helpers.stub(:get_project_info).and_return(test_proj_info)
+      Octopusci::RepoStore.stub(:add)
       Octopusci::Queue.should_receive(:enqueue).with(test_proj_info['job_klass'], "temp_pusci_test", "master", Octopusci::Helpers.decode(@github_test_payload), test_proj_info)
       post '/github-build', :payload => @github_test_payload
       last_response.status.should == 200
@@ -38,11 +39,11 @@ describe "Octopusci::Server" do
     end
   end
 
-  describe "GET /:repo_name/:branch_name/jobs" do
+  describe "GET /:owner/:repo_name/:branch_name/jobs" do
     it "should get the 20 most recently queue jobs for the provided repo_name, branch_name combo" do
       Octopusci::Server.any_instance.stub(:authorized?).and_return(true)
-      Octopusci::JobStore.should_receive(:list_repo_branch).with('foo-repo', 'bar-branch', 0, 20).and_return([])
-      get '/foo-repo/bar-branch/jobs'
+      Octopusci::JobStore.should_receive(:list_repo_branch).with('baz-owner', 'foo-repo', 'bar-branch', 0, 20).and_return([])
+      get '/baz-owner/foo-repo/bar-branch/jobs'
       last_response.status.should == 200
     end
   end

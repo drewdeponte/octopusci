@@ -30,8 +30,9 @@ describe Octopusci::JobStore do
       r = mock('redis').as_null_object
       Octopusci::JobStore.stub(:redis).and_return(r)
       r.stub(:incr).and_return(10)
-      r.should_receive(:lpush).with("octopusci:foo:bar:jobs", 10)
-      Octopusci::JobStore.prepend({ 'repo_name' => 'foo', 'ref' => 'refs/heads/bar' })      
+      r.should_receive(:lpush).with("octopusci:jobs", 10)
+      r.should_receive(:lpush).with("octopusci:owner-foo:bar:jobs", 10)
+      Octopusci::JobStore.prepend({ 'repo_name' => 'foo', 'ref' => 'refs/heads/bar', 'repo_owner_name' => 'owner' })      
     end
 
     it "should return the prepended jobs id" do
@@ -80,15 +81,15 @@ describe Octopusci::JobStore do
     it "should get the number of jobs in the list for the branch name of the given repository" do
       r = mock('redis')
       Octopusci::JobStore.stub(:redis).and_return(r)
-      r.should_receive(:llen).with("octopusci:foo:bar:jobs").and_return(8)
-      Octopusci::JobStore.repo_branch_size("foo", "bar")
+      r.should_receive(:llen).with("octopusci:owner-foo:bar:jobs").and_return(8)
+      Octopusci::JobStore.repo_branch_size("owner", "foo", "bar")
     end
 
     it "should return the number of jbos in the list for the branch name of the given repository" do
       r = mock('redis')
       Octopusci::JobStore.stub(:redis).and_return(r)
-      r.should_receive(:llen).with("octopusci:foo:bar:jobs").and_return(8)
-      Octopusci::JobStore.repo_branch_size("foo", "bar").should == 8
+      r.should_receive(:llen).with("octopusci:owner-foo:bar:jobs").and_return(8)
+      Octopusci::JobStore.repo_branch_size("owner", "foo", "bar").should == 8
     end
   end
 
@@ -115,16 +116,16 @@ describe Octopusci::JobStore do
       r = mock('redis')
       Octopusci::JobStore.stub(:redis).and_return(r)
       Octopusci::JobStore.stub(:repo_branch_size).and_return(2)
-      r.should_receive(:lrange).with("octopusci:foo:bar:jobs", 0, 1)
-      Octopusci::JobStore.list_repo_branch_job_ids('foo', 'bar', 0, 2)
+      r.should_receive(:lrange).with("octopusci:owner-foo:bar:jobs", 0, 1)
+      Octopusci::JobStore.list_repo_branch_job_ids('owner', 'foo', 'bar', 0, 2)
     end
 
     it "should return a list of all job ids from the first index given if count is larger than the start index to the end of the repositories branch job list" do
       r = mock('redis')
       Octopusci::JobStore.stub(:redis).and_return(r)
       Octopusci::JobStore.stub(:repo_branch_size).and_return(2)
-      r.should_receive(:lrange).with("octopusci:foo:bar:jobs", 0, 1)
-      Octopusci::JobStore.list_repo_branch_job_ids('foo', 'bar', 0, 4232)
+      r.should_receive(:lrange).with("octopusci:owner-foo:bar:jobs", 0, 1)
+      Octopusci::JobStore.list_repo_branch_job_ids('owner', 'foo', 'bar', 0, 4232)
     end
   end
 
@@ -148,7 +149,7 @@ describe Octopusci::JobStore do
       Octopusci::JobStore.stub(:get).with(3).and_return("foo3")
       Octopusci::JobStore.stub(:get).with(4).and_return("foo4")
       Octopusci::JobStore.stub(:get).with(5).and_return("foo5")
-      Octopusci::JobStore.list_repo_branch("foo", "bar", 0, 5).should == ["foo1", "foo2", "foo3", "foo4", "foo5"]
+      Octopusci::JobStore.list_repo_branch("owner", "foo", "bar", 0, 5).should == ["foo1", "foo2", "foo3", "foo4", "foo5"]
     end
   end
 

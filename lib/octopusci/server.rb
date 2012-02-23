@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'multi_json'
 require 'erb'
 require 'octopusci'
+require 'octopusci/repo_store'
 
 module Octopusci
   class Server < Sinatra::Base
@@ -31,11 +32,33 @@ module Octopusci
       erb :index
     end
 
-    get '/:repo_name/:branch_name/jobs' do
+    get '/:owner/:repo_name/:branch_name/jobs' do
       protected!
       @page_logo = "#{params[:repo_name]} / #{params[:branch_name]}"
-      @jobs = Octopusci::JobStore.list_repo_branch(params[:repo_name], params[:branch_name], 0, 20)
+      @jobs = Octopusci::JobStore.list_repo_branch(params[:owner], params[:repo_name], params[:branch_name], 0, 20)
       erb :index
+    end
+
+    get '/defcon' do
+      protected!
+      @page_logo = "Defcon"
+      @hide_job_status_key = true
+
+      repo_store_list = Octopusci::RepoStore.get_all
+      @repos = []
+      repo_store_list.each do |repo_info|
+        @repos << Octopusci::RepoStore.get(repo_info)
+      end
+      
+      erb :defcon
+    end
+
+    get '/:owner_name/:repo_name/:branch_name/status' do
+      protected!
+      job = Octopusci::JobStore.list_repo_branch(params[:owner_name], params[:repo_name], params[:branch_name], 0, 1).first
+
+      content_type :json
+      return {:status => job['status']}.to_json
     end
     
     get '/jobs/:job_id' do
@@ -85,7 +108,9 @@ module Octopusci
 
       if (github_payload["ref"] =~ /refs\/heads\//) && (github_payload["deleted"] != true)
         branch_name = github_payload["ref"].gsub(/refs\/heads\//, '')
-      
+          
+        Octopusci::RepoStore.add(github_payload["repository"]["name"], github_payload["repository"]["owner"]["name"])
+
         # Queue the job appropriately
         Octopusci::Queue.enqueue(proj_info['job_klass'], github_payload["repository"]["name"], branch_name, github_payload, proj_info)
         return 200

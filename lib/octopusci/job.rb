@@ -149,9 +149,9 @@ module Octopusci
       
       begin
         # Using redis to get the associated github_payload
-        github_payload = Octopusci::Queue.github_payload(project_name, branch_name)
+        github_payload = Octopusci::Queue.github_payload(@job_conf['owner'], project_name, branch_name)
         
-        @job = Octopusci::JobStore.list_repo_branch(github_payload['repository']['name'], github_payload['ref'].split('/').last, 0, 1).first
+        @job = Octopusci::JobStore.list_repo_branch(@job_conf['owner'], github_payload['repository']['name'], github_payload['ref'].split('/').last, 0, 1).first
         if @job
           @io = Octopusci::IO.new(@job)
           record_start(stage)
