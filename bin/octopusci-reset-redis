@@ -38,7 +38,7 @@ else
 
 This command is designed to allow you to reset/clear out the values in your redis
 data store associated with Octopusci. If you run this command with the proper option
-it will actually get rid of all of the data stored in the redis datae store for Octopusci.
+it will actually get rid of all of the data stored in the redis data store for Octopusci.
 It is intended to be used very rarely and only by people that understand exactly what it
 is going to do (primarily Octopusci Developers).
 
