@@ -130,3 +130,8 @@ Screenshots
 -----------
 
 ![Octopusci - Dashboard](https://img.skitch.com/20111005-tfxgw59mec5msnfu3pd6is3btf.jpg)
+
+Development
+-----------
+
+If you are interested in developing Octopusci then please checkout the [Developer Setup](http://github.com/cyphactor/octopusci/wiki/Developer-Setup) wiki page.
