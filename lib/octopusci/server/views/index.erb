@@ -3,8 +3,16 @@
     $('#jobs').delegate("a.show_hide_job_output", 'click', function() {
       var job_cont = $(this).closest('.job_summary').next('.job_content');
       var job_out = job_cont.find('.job_output').first();
-      job_out.toggle();
-      return false;      
+
+      // Manual toggle here so that I could implement on demand loading to improvie initial load performance.
+      if (job_out.is(':hidden')) {
+        job_out.find('pre > code').first().load(job_cont.closest('.job').attr('data-output-url'));
+        job_out.show();
+      } else {
+        job_out.hide();
+        job_out.find('pre > code').first().html("");
+      }
+      return false;
     });
     
     var t = setInterval(function() {
@@ -12,7 +20,12 @@
         var job_div = $(this).closest('.job');
         
         job_div.find('.job_summary').first().load(job_div.attr('data-summary-url'));
-        job_div.find('.job_output > pre > code').first().load(job_div.attr('data-output-url'));        
+      });
+
+      $('.job .job_output:visible').each(function () {
+        var job_out = $(this);
+        
+        job_out.find('pre > code').first().load(job_out.closest('.job').attr('data-output-url'));
       });
     }, 5000);
   });
@@ -24,7 +37,7 @@
         <%= erb :job_summary, :locals => { :j => j } %>
       </div>
       <div class="job_content">
-        <div class="job_output"><pre><code><%= Octopusci::IO.new(j).read_all_out_as_html %></code></pre></div>
+        <div class="job_output"><pre><code></code></pre></div>
       </div>
     </div>
   <% end %>
