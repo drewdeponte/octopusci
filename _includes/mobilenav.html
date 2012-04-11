@@ -1,0 +1,27 @@
+<dl class="nice vertical tabs show-on-phones">
+    {% assign pages_list = site.pages %}
+    {% assign group = 'home' %}
+    {% for node in pages_list %}
+      {% if group == null or group == node.group %}
+        {% if page.url == node.url %}
+          <dd><a href="{{node.url}}" class="active">{{node.title}}</a></dd>
+        {% else %}
+          <dd><a href="{{node.url}}">{{node.title}}</a></dd>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+    {% assign group = 'nav' %}
+    {% for node in pages_list %}
+      {% if group == null or group == node.group %}
+        {% if page.url == node.url %}
+          <dd><a href="{{node.url}}" class="active">{{node.title}}</a></dd>
+        {% else %}
+          <dd><a href="{{node.url}}">{{node.title}}</a></dd>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+    <dd><a href="https://github.com/cyphactor/octopusci/issues" target="_blank">Issues</a></dd>
+    <dd><a href="https://github.com/cyphactor/octopusci/wiki" target="_blank">Wiki</a></dd>
+</dl>

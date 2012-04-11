@@ -43,6 +43,11 @@ h1 {
   border-radius: 8px;
 }
 
+#main_nav a {
+  padding: 20px;
+  padding-left: 0;
+}
+
 #main_content_area {
   margin-top: 40px;
   margin-bottom: 40px;
@@ -65,6 +70,7 @@ article h1, article h2, article h3, article h4 {
 
 a {
   color: #333;
+  text-decoration: underline;
 }
 
 .entry-title {
