@@ -1,14 +1,14 @@
-Octopusci
+OctopusCI
 =========
 
-Octopusci is fresh new take on a continuous integration server centralized
+OctopusCI is fresh new take on a continuous integration server centralized
 around the concept of getting the same great CI benefits when using a
 multi-branch workflow.
 
 How's it Different?
 -------------------
 
-The impetus that brought Octopusci into being was simply the lack of CI servers
+The impetus that brought OctopusCI into being was simply the lack of CI servers
 that cleanly supported a software development workflow based on multiple
 branches. Secondarily, it was the excessive amount of effort necessary to get a
 basic CI server up and running.
@@ -16,7 +16,7 @@ basic CI server up and running.
 Octopsuci fills this gap by providing intelligent multi-branch queueing
 and multi-server job distribution. Beyond that it provides a
 solid continous integration server that is trivial to get setup and running. A number
-of the concepts used in Octopusci are pulled from
+of the concepts used in OctopusCI are pulled from
 [Continuous Delivery](http://continuousdelivery.com/),
 [Continuous Integration](http://martinfowler.com/articles/continuousIntegration.html)
 as well as Scott Chacon's post on the 
@@ -26,14 +26,14 @@ The following is a listing of a number of some of its more significant features.
 
 ### Dynamic Multi-Branch Triggering
 
-Octopusci detects branch creation/modification and dynamically generates a build for
+OctopusCI detects branch creation/modification and dynamically generates a build for
 that branch based on the project the pushed branch belongs to. Most existing CI servers
 that I have used force you to manually define jobs for each branch you would like it to
 manage.
 
 ### Multi-Server Job Distribution
 
-Octopusci allows you to configure it to run "remote jobs" on numerous servers and it
+OctopusCI allows you to configure it to run "remote jobs" on numerous servers and it
 keeps track of which servers are currently busy as well as handing new jobs to the
 correct servers as they become available. This is extremely valuable if you are
 interested in running automated acceptance tests that take a long time to run such
@@ -41,17 +41,17 @@ as Selenium/Cucumber & Capybara Tests.
 
 ### Intelligent Multi-Branch Queueing
 
-Octopusci intelligently manages its job queue by by simply updating any pending jobs with
+OctopusCI intelligently manages its job queue by by simply updating any pending jobs with
 the newly pushed branch data. This means that at any given point in time there is only
-ever one pending job for each branch. When, a code push comes into Octopusci it
+ever one pending job for each branch. When, a code push comes into OctopusCI it
 first looks to see if there is already a pending job for the branch that was pushed. If
 there is, it simply updates the jobs associated branch data. If there is not already a
 pending job then it queues a new job for that branch.
 
 ### GitHub Integration ###
 
-Octopusci was designed specifically to integrate cleanly with GitHub's push notifications
-system. At some point in the future Octopusci may support more than just GitHub but for
+OctopusCI was designed specifically to integrate cleanly with GitHub's push notifications
+system. At some point in the future OctopusCI may support more than just GitHub but for
 the time being GitHub is our primary focus.
 
 Install Guide
@@ -59,9 +59,9 @@ Install Guide
 
 ### Install Dependencies ###
 
-Octopusci has one major dependency at the moment, [Redis](http://redis.io/).
+OctopusCI has one major dependency at the moment, [Redis](http://redis.io/).
 [Redis](http://redis.io/) needs to be installed and configured to startup appropriately
-on the box you plan to run Octopusci on.
+on the box you plan to run OctopusCI on.
 
 On Debian/Ubuntu machines this is to my knowledge as easy as `apt-get install redis-server`.
 
@@ -88,7 +88,7 @@ TODO: Fill this out with details on the config, required fields, optional fields
 ### Jobs ###
 
 Add any jobs you would like to the `/etc/octopusci/jobs` directory as .rb files
-and Octopusci will load them appropriately when started.
+and OctopusCI will load them appropriately when started.
 
 ### Web Interface ###
 
@@ -114,13 +114,13 @@ Apache virtual host example
       </Directory>
     </VirtualHost>
 
-The above will give us the web Octopusci web interface.
+The above will give us the web OctopusCI web interface.
 
 If you are developing you can simply start this up by running
 `rackup -p whatever_port` while inside the octopusci directory where the
 `config.ru` file exists.
 
-I recommend you setup the second half of Octopusci (`octopusci-tentacles`) with
+I recommend you setup the second half of OctopusCI (`octopusci-tentacles`) with
 God or some other monitoring system. However, for development you can simply
 run `octopusci-tentacles` directoly as follows:
 
@@ -129,9 +129,9 @@ run `octopusci-tentacles` directoly as follows:
 Screenshots
 -----------
 
-![Octopusci - Dashboard](https://img.skitch.com/20111005-tfxgw59mec5msnfu3pd6is3btf.jpg)
+![OctopusCI - Dashboard](https://img.skitch.com/20111005-tfxgw59mec5msnfu3pd6is3btf.jpg)
 
 Development
 -----------
 
-If you are interested in developing Octopusci then please checkout the [Developer Setup](http://github.com/cyphactor/octopusci/wiki/Developer-Setup) wiki page.
+If you are interested in developing OctopusCI then please checkout the [Developer Setup](http://github.com/cyphactor/octopusci/wiki/Developer-Setup) wiki page.
