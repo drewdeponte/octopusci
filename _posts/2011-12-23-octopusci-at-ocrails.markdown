@@ -1,11 +1,11 @@
 ---
 layout: post
-title: Octopusci @ OC Rails Meetup
+title: OctopusCI @ OC Rails Meetup
 tags: [ocrails, orange county, rails, ruby on rails, presentation, official release]
 ---
 
 Recently I a gave a presentation at an OC Rails meetup in Santa Ana about the offical release
-of Octopusci. In the presentation I explain exactly what Octopusci is, why I felt the need to
+of OctopusCI. In the presentation I explain exactly what OctopusCI is, why I felt the need to
 build, and provide a little insight into where I would like to take it.
 
 I have provided the audio recording of the presentation synced to the slides below. I hope you

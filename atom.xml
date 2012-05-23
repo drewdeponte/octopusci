@@ -4,13 +4,13 @@ layout: nil
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
  
- <title>Octopusci</title>
+ <title>OctopusCI</title>
  <link href="http://octopusci.info/atom.xml" rel="self"/>
  <link href="http://octopusci.info/"/>
  <updated>{{ site.time | date_to_xmlschema }}</updated>
  <id>http://octopusci.info/</id>
  <author>
-   <name>Octopusci</name>
+   <name>OctopusCI</name>
    <email>adeponte@octopusci.info</email>
  </author>
 
