@@ -7,6 +7,7 @@ require 'octopusci/version'
 require 'trollop'
 require "uri"
 require "net/http"
+require 'pry'
 
 opts = Trollop::options do
   version "Octopusci v#{Octopusci::Version} (c) Andrew De Ponte"
@@ -19,11 +20,15 @@ opts = Trollop::options do
   opt :owner_name, "Repository owner's name", :short => "-w", :default => 'cyphactor'
   opt :pusher_name, "Pusher's name", :short => "-u", :default => 'cyphactor'
   opt :pusher_email, "Pusher's email address", :short => "-s", :default => 'pusher@example.com'
-  opt :commit_one, "First commit sha1, must be real", :short => "-x", :default => "8573e06a3cb511babd9d19d33be637b661232011"
-  opt :commit_two, "Second commit sha1, must be real", :short => "-y", :default => "771adb4b75694804f256e7e61704648a14d52afc"
-  opt :commit_three, "Third commit sha1, must be real", :short => "-z", :default => "dadf8446b2037960cc6223d60a7d57c5d264fa48"
-  opt :commit_before, "Before commit sha1", :short => "-f", :default => "c47c0ec4cf88291e6120fbd4fafe03910cde1d4e"
-  opt :commit_after, "After commit sha1", :short => "-g", :default => "fdb7494a00961f19d58566f8146b3643c0e14492"
+
+  # Added these 3 in order to make this script less hard-coded and more useful.
+  opt :commit_one, "A fresh commit's sha1, must be real", :short => "-x", :default => "8573e06a3cb511babd9d19d33be637b661232011"
+  opt :commit_two, "A less fresh commit's sha1, must be real", :short => "-y", :default => "771adb4b75694804f256e7e61704648a14d52afc"
+  opt :commit_three, "Least fresh commit's sha1, must be real", :short => "-z", :default => "dadf8446b2037960cc6223d60a7d57c5d264fa48"
+  
+  # The next 2, in Cyph's example case, occur after the last 3. You can confirm this by looking throuh git log as I did. -Keyvan
+  opt :commit_before, "A 'before' commit's sha1, must be real", :short => "-f", :default => "c47c0ec4cf88291e6120fbd4fafe03910cde1d4e"
+  opt :commit_after, "An 'after' commit's sha1, must be real", :short => "-g", :default => "fdb7494a00961f19d58566f8146b3643c0e14492"
 end
 
 http = Net::HTTP.new(opts[:hostname], opts[:port])
@@ -45,3 +50,5 @@ puts 'Code = ' + resp.code
 puts 'Message = ' + resp.message
 resp.each {|key, val| puts key + ' = ' + val}
 puts data
+
+binding.pry
