@@ -131,6 +131,12 @@ Screenshots
 
 ![OctopusCI - Dashboard](https://img.skitch.com/20111005-tfxgw59mec5msnfu3pd6is3btf.jpg)
 
+IRC
+---
+
+We currently have a persistent IRC channel named `#octopusci` setup on `irc.freenode.net`.
+I try to be in this room all the time to help people out, answer questions, and help contributors out.
+
 Development
 -----------
 
