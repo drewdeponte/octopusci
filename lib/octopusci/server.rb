@@ -70,6 +70,26 @@ module Octopusci
       @job = Octopusci::JobStore.get(params[:job_id])
       erb :job_summary, :layout => false, :locals => { :j => @job }
     end
+
+    get '/rebuild/:job_id' do
+      protected!
+
+      job = Octopusci::JobStore.get(params[:job_id])
+
+      # Make sure that the request is for a project Octopusci knows about
+      proj_info = Octopusci::Helpers.get_project_info(job['repo_name'], job['repo_owner_name'])
+      if proj_info.nil?
+        return 404
+      end
+
+      gh_pl_key = Octopusci::Queue.github_payload_key(job['repo_name'], job['branch_name'])
+      resque_encoded_payload = Octopusci::Queue.redis.get(gh_pl_key)
+      gh_pl = Resque.decode(resque_encoded_payload)
+
+      Octopusci::Queue.enqueue(proj_info['job_klass'], job['repo_name'], job['branch_name'], gh_pl, proj_info)
+
+      redirect '/'
+    end
     
     post '/github-build' do
       if params['payload'].nil?
