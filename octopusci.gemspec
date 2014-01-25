@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.authors     = ['Andrew De Ponte', 'Aldo Sarmiento']
   s.email       = ['cyphactor@gmail.com', 'sarmiena@gmail.com']
   s.homepage    = 'https://github.com/cyphactor/octopusci'
+  s.licenses    = ['MIT']
   
   s.files       = %w( README.markdown LICENSE config.ru )
   s.files       += Dir.glob("lib/**/*")
@@ -20,19 +21,16 @@ Gem::Specification.new do |s|
   s.files       += Dir.glob("extra/**/*")
   s.executables = [ "octopusci-tentacles", "octopusci-skel", "octopusci-reset-redis", "octopusci-reset-stage-locker", "octopusci-post-build-request" ]
   
-  s.add_dependency 'sinatra'
-  s.add_dependency 'json'
-  s.add_dependency 'resque'
-  s.add_dependency 'actionmailer'
-  s.add_dependency 'multi_json'
-  s.add_dependency 'time_ago_in_words'
-  s.add_dependency 'ansi2html'
-  s.add_dependency 'trollop'
+  s.add_dependency 'sinatra', '~> 1.4'
+  s.add_dependency 'json', '~> 1.8'
+  s.add_dependency 'resque', '~> 1.25'
+  s.add_dependency 'actionmailer', '~> 4.0'
+  s.add_dependency 'multi_json', '~> 1.8'
+  s.add_dependency 'time_ago_in_words', '~> 0.1'
+  s.add_dependency 'ansi2html', '~> 5.3'
+  s.add_dependency 'trollop', '~> 2.0'
   
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'rspec'
-  s.add_development_dependency 'rack-test'
-  s.add_development_dependency 'guard'
-  s.add_development_dependency 'guard-rspec'
-  s.add_development_dependency 'ruby_gntp'
+  s.add_development_dependency 'rake', '~> 10.1'
+  s.add_development_dependency 'rspec', '~> 2.14'
+  s.add_development_dependency 'rack-test', '~> 0.6'
 end
