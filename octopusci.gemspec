@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'resque'
   s.add_dependency 'actionmailer'
   s.add_dependency 'multi_json'
-  s.add_dependency 'time-ago-in-words'
+  s.add_dependency 'time_ago_in_words'
   s.add_dependency 'ansi2html'
   s.add_dependency 'trollop'
   

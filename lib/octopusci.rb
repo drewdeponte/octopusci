@@ -1,4 +1,4 @@
-require 'time-ago-in-words'
+require 'time_ago_in_words'
 
 require 'octopusci/version'
 require 'octopusci/errors'
